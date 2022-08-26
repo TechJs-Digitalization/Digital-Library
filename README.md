@@ -1,5 +1,5 @@
 # DIgital library
-## Backe-nd
+## Backend
 - launch `cd ./api` then `npm i` to install all dependencies
 - create a file named "`.env`" inside the `api` folder.
 - put these info inside this file:
