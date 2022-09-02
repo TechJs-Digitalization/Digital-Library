@@ -10,6 +10,8 @@ import { NumTel } from "./entity/NumTel"
 import { Book } from "./entity/Book"
 import { BookCategory } from "./entity/BookCategory"
 import { Subscription } from './entity/Subscription'
+import { BookPicture } from "./entity/BookPicture";
+import { BookCheckout } from "./entity/BookCheckout";
 
 export const AppDataSource = new DataSource({
     type: "postgres",
@@ -20,7 +22,7 @@ export const AppDataSource = new DataSource({
     database: process.env.DB_NAME,
     synchronize: true,
     logging: false,
-    entities: [User, Author, NumTel, Book, BookCategory, Subscription],
+    entities: [User, Author, NumTel, Book, BookCategory, BookPicture, BookCheckout, Subscription],
     migrations: [],
     subscribers: [],
 })
