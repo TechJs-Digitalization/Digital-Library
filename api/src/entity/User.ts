@@ -1,9 +1,10 @@
 import { Entity, Column, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Person } from "./Person";
-import { Subscription, SUBSCRIPTION_TYPE } from './Subscription';
+import { Person } from "./abstract/Person";
+import { Subscription } from './Subscription';
 import { NumTel } from './NumTel';
+import { BookCheckout } from "./BookCheckout";
 
-@Entity({name: 'users'})
+@Entity({ name: 'users' })
 export class User extends Person {
     @PrimaryGeneratedColumn("uuid")
     id: string;
@@ -18,6 +19,9 @@ export class User extends Person {
 
     @OneToMany(() => NumTel, (num: NumTel) => num.user, { cascade: true })
     numTel!: NumTel[];
+
+    @OneToMany(() => BookCheckout, (checkout: BookCheckout) => checkout.user)
+    checkouts: BookCheckout[];
 
 
     constructor(firstName: string, lastName: string, dateOfBirth: Date, mail: string) {
