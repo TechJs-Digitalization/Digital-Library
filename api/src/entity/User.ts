@@ -12,10 +12,13 @@ export class User extends Person {
     @Column({
         type: "varchar"
     })
-    mail!: string;
+    mail: string;
+
+    @Column()
+    password: string;
 
     @OneToMany(() => Subscription, (subscription: Subscription) => subscription.user, { cascade: true })
-    subscriptions!: Subscription[];
+    subscriptions: Subscription[];
 
     @OneToMany(() => NumTel, (num: NumTel) => num.user, { cascade: true })
     numTel!: NumTel[];
