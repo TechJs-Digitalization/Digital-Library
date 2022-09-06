@@ -6,11 +6,8 @@ export class BookCategory{
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({type: 'varchar'})
+    @Column({type: 'varchar', unique: true})
     name!: string;
-
-    @Column({type: 'text'})
-    synopsis!: string;
 
     @OneToMany(()=>Book, (book: Book)=>book.category)
     books: Book[];

@@ -15,7 +15,7 @@ export class BookPicture extends Picture{
         this.setRandomFileName(fileName);
     }
     
-    async setRandomFileName(fileName:string){
+    protected async setRandomFileName(fileName:string){
         let temp: string, found: Partial<BookPicture> | null;
         do{
             temp= getNewFileName(nanoid(10), fileName);

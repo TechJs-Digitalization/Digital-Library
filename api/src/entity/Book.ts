@@ -16,6 +16,9 @@ export class Book{
     @Column()
     available!: number;
 
+    @Column({type: 'text'})
+    synopsis!: string;
+
     @OneToMany(()=>BookPicture, (bookPic: BookPicture)=>bookPic.book, {cascade: true})
     bookPics: BookPicture[];
 

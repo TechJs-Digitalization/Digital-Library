@@ -7,5 +7,5 @@ export abstract class Picture{
     @Column({unique: true})
     fileName: string;
 
-    abstract setRandomFileName(fileName: string): void;
+    protected abstract setRandomFileName(fileName: string): void;
 }

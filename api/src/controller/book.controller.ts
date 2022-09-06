@@ -20,7 +20,7 @@ class BookController{
                 },
                 author:{
                     id: true,
-                    nomDePlumes:{
+                    nomDePlumes: {
                         value: true
                     }
                 }
