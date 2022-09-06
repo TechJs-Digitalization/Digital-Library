@@ -2,7 +2,6 @@ import { Check, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeor
 import { Subscription } from "./Subscription";
 
 @Entity()
-@Check('"available">=0')
 @Check('"cost">=0')
 export class SubscriptionType{
     @PrimaryGeneratedColumn()

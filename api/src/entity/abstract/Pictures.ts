@@ -7,5 +7,10 @@ export abstract class Picture{
     @Column({unique: true})
     fileName: string;
 
-    protected abstract setRandomFileName(fileName: string): void;
+    @Column('boolean')
+    cover: boolean
+
+    constructor(cover:boolean=false){
+        this.cover= cover;
+    }
 }

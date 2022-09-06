@@ -11,6 +11,12 @@ bookRouter.get('/:id', async (req: Request, res: Response)=>{
         res.status(200).json({err: false, ...book});
 })
 
-// .post('/', async (req: Request, res: Response)=>{
+.get('/', async (req: Request, res: Response)=>{
+    res.status(200).json({msg: 'miainga'})
+})
 
-// })
+.post('/', async (req: Request, res: Response)=>{
+    bookController.saveBook(req, res);
+})
+
+export default bookRouter;

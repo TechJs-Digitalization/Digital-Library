@@ -23,16 +23,11 @@ export class Book{
     bookPics: BookPicture[];
 
     @ManyToOne(()=>BookCategory, (category: BookCategory)=>category.books)
-    category!: BookCategory;
+    category: BookCategory;
 
     @ManyToOne(()=>Author, (author: Author)=>author.books)
     author: Author;
 
     @ManyToMany(()=>BookCheckout)
     bookChekouts: BookCheckout[];
-
-    constructor(title: string, available:number=0){
-        this.title= title;
-        this.available= available;
-    }
 }
