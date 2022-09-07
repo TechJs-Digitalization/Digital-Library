@@ -6,11 +6,4 @@ export abstract class Picture{
 
     @Column({unique: true})
     fileName: string;
-
-    @Column('boolean')
-    cover: boolean
-
-    constructor(cover:boolean=false){
-        this.cover= cover;
-    }
 }

@@ -7,10 +7,10 @@ import { BookPicture } from "./BookPicture";
 @Entity()
 @Check(`"available">=0`)
 export class Book{
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn('increment')
     id: number;
 
-    @Column({type: 'varchar'})
+    @Column('varchar')
     title!: string;
 
     @Column()
@@ -18,6 +18,9 @@ export class Book{
 
     @Column({type: 'text'})
     synopsis!: string;
+
+    @Column('varchar')
+    coverName!: string;
 
     @OneToMany(()=>BookPicture, (bookPic: BookPicture)=>bookPic.book, {cascade: true})
     bookPics: BookPicture[];

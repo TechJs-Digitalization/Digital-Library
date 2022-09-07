@@ -3,8 +3,8 @@ import { SubscriptionType } from "./SubscriptionType";
 import { User } from './User';
 @Entity()
 export class Subscription {
-    @PrimaryGeneratedColumn()
-    id: number;
+    @PrimaryGeneratedColumn('uuid')
+    id: string;
 
     @Column({ length: 25, nullable: true })
     pictureName: string;

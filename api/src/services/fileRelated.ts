@@ -11,13 +11,15 @@ function replaceFileName(newName: string, oldFileName:string):string{
 }
 
 function rectifyFileName(fileName: string){
-    return fileName.replace(/ /g, '_').replace(/[àâã]/g, 'a')
+    fileName= fileName.replace(/ /g, '_').replace(/[àâã]/g, 'a')
     .replace(/[éèêë]/g, 'e')
     .replace(/[îìî]/g, 'i')
     .replace(/[ôõ]/g, 'o')
     .replace(/[ùüû]/g, 'u')
     .replace(/ÿ/g, 'y')
     .replace(/['\[\]|#+-\\&\-"\(\)\@=$¤£%*,;:/!^§]/g, '_');
+
+    return encodeURIComponent(fileName);
 }
 
-export {replaceFileName};
+export {replaceFileName, rectifyFileName};

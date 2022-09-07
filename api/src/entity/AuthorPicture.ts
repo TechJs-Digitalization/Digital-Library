@@ -7,8 +7,8 @@ export class AuthorPicture extends Picture{
     @ManyToOne(()=>Author, (author: Author)=>author.authorPics)
     author: Author;
 
-    constructor(fileName:string, cover:boolean=false){
-        super(cover);
+    constructor(fileName:string){
+        super();
         this.fileName= fileName;
     }
 }

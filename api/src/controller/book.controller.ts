@@ -1,30 +1,30 @@
-import { Request, Response } from "express";
-import formidable from "formidable";
 import path from "path";
 import { Repository } from "typeorm";
 import { AppDataSource } from "../data-source";
+import { Author } from "../entity/Author";
 import { Book } from "../entity/Book";
+import { BookCategory } from "../entity/BookCategory";
 import { BookPicture } from "../entity/BookPicture";
-import { replaceFileName } from "../services/fileRelated";
-import { bookCategoryController } from "./bookCategory.controller";
-
 class BookController{
     private readonly repository: Repository<Book>;
-    private readonly pictureDir= path.join(__dirname, 'public', 'bookPictures');
+    readonly pictureDir= path.join(__dirname, '..','..','public', 'bookPictures');
 
     constructor(){
         this.repository= AppDataSource.getRepository(Book);
+        
     }
 
-    public async getAllInfoSingleBook(req: Request, res: Response): Promise< Book | null>{
+    public async get(id: number): Promise< Book | null>{
         return this.repository.findOne({
-            where: {id: Number(req.query.bookId)},
+            where: {id: id},
             relations: {
                 bookPics: {
                     fileName: true
                 },
                 author:{
                     id: true,
+                    lastName: true,
+                    firstName: true,
                     nomDePlumes: {
                         value: true
                     }
@@ -34,35 +34,18 @@ class BookController{
     }
 
     
-    public async saveBook(req: Request, res:Response){
-        const form= formidable({
-            multiples: true,
-            maxFileSize: 20*1024*1024, //20MB 
-            uploadDir: this.pictureDir,
-
-            // ----------------ETO ZAO
+    public async save(title:string, synopsis: string, author:Author, available:number, category:BookCategory, coverName:string, pictures: BookPicture[]){
+        if(!(title && author && available && category && category && coverName && pictures))
+            throw new Error('All fields should be filled')
+        this.repository.save({
+            title: title,
+            available: available,
+            coverName: coverName,
+            synopsis: synopsis,
+            author: author,
+            category: category,
+            bookPics: pictures,
         })
-
-
-        const category= await bookCategoryController.getAllInfoSingleBookCategory(req, res)
-        const {imageList, title, author, available} = req.body;
-
-        for(let i=0; i<imageList.length; i++){
-            const newName= title + '-' + i;
-            const fileName= replaceFileName(imageList[i].fileName, newName);
-            imageList[i]= new BookPicture(fileName);
-            console.log(imageList[i].id);
-        }
-
-        if(category)
-            this.repository.save({
-                title: title,
-                author: author,
-                available: Number(available),
-                category: category
-            })
-        else
-            res.status(500).send({err: true, msg: 'Category not found'})
     }
 }
 export const bookController= new BookController();

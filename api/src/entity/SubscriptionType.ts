@@ -20,10 +20,4 @@ export class SubscriptionType{
 
     @OneToMany(()=>Subscription, (sub: Subscription)=>sub.type)
     subscriptions: Subscription[];
-
-    constructor(validity: number, maxBookPerMonth: number, cost: number){
-        this.validity= validity;
-        this.maxBookPerMonth= maxBookPerMonth;
-        this.cost= cost;
-    }
 }
