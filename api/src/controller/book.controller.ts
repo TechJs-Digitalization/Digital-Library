@@ -4,7 +4,6 @@ import { AppDataSource } from "../data-source";
 import { Author } from "../entity/Author";
 import { Book } from "../entity/Book";
 import { BookCategory } from "../entity/BookCategory";
-import { BookPicture } from "../entity/BookPicture";
 import { bookPictureController } from "./BookPicture.controller";
 
 //nom des fichier couverture: titre_authorId_cover.ext
@@ -18,23 +17,39 @@ class BookController{
         this.repository= AppDataSource.getRepository(Book);    
     }
 
-    public async get(id: number): Promise< Book | null>{
-        return this.repository.findOne({
-            where: {id: id},
+    public async get(id: number)/* : Promise< Book | null> */{
+        let result= await this.repository.findOne({
             relations: {
-                bookPics: {
-                    fileName: true
+                category: true,
+                author: {
+                    nomDePlumes: true
                 },
-                author:{
+                bookPics: true
+            },
+            select: {
+                author: {
                     id: true,
-                    lastName: true,
                     firstName: true,
-                    nomDePlumes: {
+                    lastName: true,
+                    nomDePlumes:{
                         value: true
                     }
+                },
+                bookPics:{
+                    fileName: true
                 }
+            },
+            where: {
+                id: id
             }
         })
+        if(result){
+            result.coverName= '/bookPictures/'+ result.coverName;
+
+            if(result.bookPics)
+                result.bookPics.forEach(pic => pic.fileName= '/bookPictures/' + pic.fileName); 
+        }
+        return result;
     }
 
     

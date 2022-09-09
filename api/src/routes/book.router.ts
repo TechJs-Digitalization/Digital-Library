@@ -10,10 +10,10 @@ import { renameCover, renamePictures } from "../services/fileUpload";
 const bookRouter: Router= Router();
 
 bookRouter.get('/:id', async (req: Request, res: Response)=>{
-    const id= Number(req.query.id);
+    const id= Number(req.params.id);
     const book= await bookController.get(id);
     if(!book)
-        return res.status(500).json({err: true, msg: 'Book not found'});
+        return res.status(404).json({err: true, msg: 'Book not found'});
     else
         return res.status(200).json({err: false, data: book});
 })

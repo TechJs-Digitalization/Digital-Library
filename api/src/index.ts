@@ -2,6 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import { AppDataSource } from "./data-source"
 import router from './routes/router';
+import { join } from 'path';
 
 AppDataSource.initialize().then(async () => {
     const app = express();
@@ -12,6 +13,8 @@ AppDataSource.initialize().then(async () => {
     app.use(express.urlencoded({extended: true}));
 
     app.use(cors());
+
+    app.use(express.static(join(__dirname, '..','public')));
 
     app.use(router);
 
