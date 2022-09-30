@@ -3,9 +3,7 @@ import formidable from "formidable";
 import { authorController } from "../controller/author.controller";
 import { bookController } from "../controller/book.controller";
 import { bookCategoryController } from "../controller/bookCategory.controller";
-import { bookPictureController } from "../controller/BookPicture.controller";
-import { BookPicture } from "../entity/BookPicture";
-import { renameCover, renamePictures } from "../services/fileUpload";
+import { getBasenames } from "../services/fileUpload";
 
 const bookRouter: Router= Router();
 
@@ -38,6 +36,7 @@ bookRouter.get('/:id', async (req: Request, res: Response)=>{
         if(err) throw err;
         try {     
             if(!files.cover) throw new Error('Please upload a cover picture');
+            if(!files.pictures) throw new Error('Please upload at least one illustration picture');
 
             const synopsis= (((typeof fields.synopsis)=='string' || !fields.synopsis==undefined) ? fields.synopsis : fields.synopsis[0]) as string;
             if(!synopsis) throw new Error('Synopsis field cannot be null');
@@ -61,20 +60,16 @@ bookRouter.get('/:id', async (req: Request, res: Response)=>{
 
             const bookAlreadyExist= await bookController.verifyIfExistByAuthor(title, authorIdNumber);
             if(bookAlreadyExist) throw new Error('This book written by the concerned author already exists')
-            else{
-                //nom des fichier couverture: titre_authorId_cover.ext
-                //nom edes fichiers illustrations: titre_authorId_X.ext
-                const commonFileName= title + '_' + fields.authorId;            
-            
-                const coverName= await renameCover(files.cover, bookController.pictureDir, commonFileName);
-                const picsNames= await renamePictures(files.pictures, bookController.pictureDir, commonFileName); 
+            else{         
+                const coverName= getBasenames(('size' in files.cover) ? files.cover : files.cover[0]);
+                const picsNames= getBasenames(...('length' in files.pictures) ? files.pictures : [files.pictures]); 
                 
                 await bookController.save(title, synopsis, foundAuthor, availableNumber, foundCategory, coverName[0], picsNames);
                 res.status(201).json({err: false, msg: 'Book successfully created'});
             }
-        } catch (err) {
-            if(err instanceof Error)
-                return res.status(400).json({err: true, msg: err.message})
+        } catch (error) {
+            if(error instanceof Error)
+                return res.status(400).json({err: true, msg: error.message})
         }
     })
 })

@@ -6,9 +6,6 @@ import { Book } from "../entity/Book";
 import { BookCategory } from "../entity/BookCategory";
 import { bookPictureController } from "./BookPicture.controller";
 
-//nom des fichier couverture: titre_authorId_cover.ext
-//nom edes fichiers illustrations: titre_authorId_X.ext
-
 class BookController{
     private readonly repository: Repository<Book>;
     readonly pictureDir= path.join(__dirname, '..','..','public', 'bookPictures');
