@@ -20,7 +20,7 @@ export class Book{
     synopsis!: string;
 
     @Column('varchar')
-    coverName!: string;
+    coverPic!: string;
 
     @OneToMany(()=>BookPicture, (bookPic: BookPicture)=>bookPic.book, {cascade: true})
     bookPics: BookPicture[];

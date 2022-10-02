@@ -1,4 +1,4 @@
-import path from "path";
+import {join} from "path";
 import { Repository } from "typeorm";
 import { AppDataSource } from "../data-source";
 import { Author } from "../entity/Author";
@@ -6,16 +6,15 @@ import { Book } from "../entity/Book";
 import { BookCategory } from "../entity/BookCategory";
 import { bookPictureController } from "./BookPicture.controller";
 
-class BookController{
-    private readonly repository: Repository<Book>;
-    readonly pictureDir= path.join(__dirname, '..','..','public', 'bookPictures');
-
-    constructor(){
-        this.repository= AppDataSource.getRepository(Book);    
+export default class BookController{
+    static #repository: Repository<Book>;
+    static{
+        BookController.#repository= AppDataSource.getRepository(Book);
     }
+    static readonly pictureDir= join(__dirname, '..','..','public', 'bookPictures');
 
-    public async get(id: number)/* : Promise< Book | null> */{
-        let result= await this.repository.findOne({
+    static async get(id: number): Promise< Book | null>{
+        let result= await BookController.#repository.findOne({
             relations: {
                 category: true,
                 author: {
@@ -41,7 +40,7 @@ class BookController{
             }
         })
         if(result){
-            result.coverName= '/bookPictures/'+ result.coverName;
+            result.coverPic= '/bookPictures/'+ result.coverPic;
 
             if(result.bookPics)
                 result.bookPics.forEach(pic => pic.fileName= '/bookPictures/' + pic.fileName); 
@@ -50,16 +49,13 @@ class BookController{
     }
 
     
-    public async save(title:string, synopsis: string, author:Author, available:number, category:BookCategory, coverName:string, picsNames: string[]){
-        if(!(title && author && available && category && category && coverName && picsNames))
-            throw new Error('All fields should be filled')
-
+    static async save(title:string, synopsis: string, author:Author, available:number, category:BookCategory, coverPic:string, picsNames: string[]){
         const pics= await bookPictureController.save(...picsNames);
 
-        await this.repository.save({
+        await BookController.#repository.save({
             title: title,
             available: available,
-            coverName: coverName,
+            coverPic: coverPic,
             synopsis: synopsis,
             author: author,
             category: category,
@@ -67,8 +63,54 @@ class BookController{
         })
     }
 
-    public async verifyIfExistByAuthor(title:string, authorId:number){
-        const found= await this.repository.createQueryBuilder('book')
+    static async update(id: number, title: string, synopsis: string, author: number | null, available:number, category: number | null, coverPic?: string){
+        if(coverPic)
+            await BookController.#repository.update({id: id},{
+                title: title,
+                available: available,
+                synopsis: synopsis,
+                coverPic: coverPic,
+            });
+        else
+            await BookController.#repository.update({id: id},{
+                title: title,
+                available: available,
+                synopsis: synopsis,
+            });
+
+        await BookController.#repository.createQueryBuilder()
+            .relation('author')
+            .of(id)
+            .set(author)
+
+        await BookController.#repository.createQueryBuilder()
+            .relation('category')
+            .of(id)
+            .set(category);
+    }
+
+    static async getCoverPicture(id: number): Promise<string | null>{
+        const result= await BookController.#repository.findOne({
+            where: {id: id},
+            select: {coverPic: true}
+        })
+
+        if(result)
+            return join(BookController.pictureDir, result.coverPic);
+
+        return null;
+    }
+
+    static async verifyBookExist(id: number) : Promise<boolean>{
+        const book= await BookController.#repository.preload({
+            id: id
+        });
+
+        return (book!=undefined);
+    }
+
+    static async verifyIfExistByAuthor(title:string, authorId:number){
+        const found= await BookController.#repository.createQueryBuilder('book')
             .leftJoin('book.author', 'author')
             .select(['book.title'])
             .where('author.id= :id', {id: authorId})
@@ -77,4 +119,3 @@ class BookController{
         return (found!=null);
     }
 }
-export const bookController= new BookController();

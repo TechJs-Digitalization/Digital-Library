@@ -1,6 +1,6 @@
 import { File } from "formidable";
-import { rename } from "fs/promises";
-import { extname, join, basename } from "path";
+import { rename, unlink } from "fs/promises";
+import { extname, join } from "path";
 
 function rectifyFileName(fileName: string){
     fileName= fileName.replace(/ /g, '_').replace(/[àâã]/g, 'a')
@@ -55,8 +55,15 @@ async function renameCover(files:File | File[], uploadDir: string, commonFileNam
 
 }
 
-function getBasenames(...files: File[]) : string[]{
-    return files.map(f=> basename(f.filepath));
+async function deleteFile(...filePath: string[]){
+    await Promise.all(
+        filePath.map(file=> unlink(file)
+    ));
 }
 
-export {renamePictures, renameCover, getBasenames};
+function getBasenames(...files: File[]) : string[] | null{
+    const resultat= files.map(f=> f.newFilename);
+    return (resultat.length>=1) ? resultat : null;
+}
+
+export {renamePictures, renameCover, getBasenames, deleteFile};
