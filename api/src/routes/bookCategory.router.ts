@@ -1,4 +1,4 @@
 import { Router } from "express";
-import { bookCategoryController } from "../controller/bookCategory.controller";
+import { bookCategoryController } from "../controllers/bookCategory.controller";
 
 const categoryRouter= Router();

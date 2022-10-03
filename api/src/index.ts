@@ -1,8 +1,18 @@
-import express from 'express'
-import cors from 'cors'
-import { AppDataSource } from "./data-source"
+import express from 'express';
+import cors from 'cors';
+import { AppDataSource } from "./data-source";
 import router from './routes/router';
 import { join } from 'path';
+import { Fields, Files } from 'formidable';
+
+declare global {
+    namespace Express {
+        export interface Request {
+            files: Files;
+            fields: Fields;
+        }
+    }
+}
 
 AppDataSource.initialize().then(async () => {
     const app = express();
