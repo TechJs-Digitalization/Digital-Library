@@ -16,7 +16,7 @@ PORT= Replace_the_port_address_where_the_server_gonna_be_launched
 
 - **NB:** After creating that entity, create separated branch from the `master` branch per fonctionnality
 
-- ****ADMIN****
+ ****ADMIN****
 - email:"admin@gmail.com"
 - password:"admin"
 
