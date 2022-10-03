@@ -1,4 +1,4 @@
-# Awesome Project Build with TypeORM
+# API REST with expressJS and Typescript
 
 Steps to run this project:
 
@@ -8,6 +8,6 @@ Steps to run this project:
 
 
 4. ****ADMIN****
-    email:"admin@gmail.com"
+    email:"admin@gmail.com",
     password:"admin"
 5. when testing the authroutes, take the token on the body(json) and set it to the header Authorization
