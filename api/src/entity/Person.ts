@@ -1,28 +1,28 @@
 import { Column } from "typeorm";
 
-export abstract class Person{
+export abstract class Person {
     @Column({
         type: "varchar",
         length: 30,
         nullable: false
     })
-    firstName!: string
+    firstName: string
 
     @Column({
         type: "varchar",
         length: 30,
         nullable: false
     })
-    lastName!: string
+    lastName: string
 
     @Column({
         type: "date"
     })
-    dateOfBirth!: Date;
+    BirthDate: Date;
 
-    constructor(firstName : string, lastName:string, dateOfBirth:Date){
-        this.firstName= firstName;
-        this.lastName= lastName;
-        this.dateOfBirth= dateOfBirth;
+    constructor(firstName: string, lastName: string, BirthDate: Date) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.BirthDate = BirthDate;
     }
 }

@@ -1,22 +1,26 @@
+import express from 'express'
+import * as bodyParser from "body-parser"
+import cors from 'cors'
+import Indexroutes from "./routes/IndexRoutes"
 import { AppDataSource } from "./data-source"
-import { User } from "./entity/User"
-import {Subscription, SUBSCRIPTION_TYPE} from './entity/Subscription'
-import { NumTel } from "./entity/NumTel"
 
-AppDataSource.initialize().then(async () => {
+const port = process.env.PORT || 5000;
 
-    console.log("Inserting a new user into the database...")
-    const numbers= [new NumTel('+261341234567'), new NumTel('+261331234567')];
-    const user = new User('Bema', 'RANDRIA', new Date(2018, 11, 24), 'tes@test.com');
-    user.numTel= numbers;
-    user.subscriptions= [new Subscription(SUBSCRIPTION_TYPE.test1)];
-    await AppDataSource.manager.save(user)
-    console.log("Saved a new user with id: " + user.id)
+AppDataSource
+    .initialize()
+    .then(async () => {
 
-    console.log("Loading users from the database...")
-    const users = await AppDataSource.manager.find(User)
-    console.log("Loaded users: ", users)
+        // create express app
+        const app = express();
+        app.use(express.json());
+        app.use(express.urlencoded({ extended: true }));
+        app.use(bodyParser.json());
+        app.use(cors());
+        app.use('/', Indexroutes);
 
-    console.log("Here you can setup and run express / fastify / any other framework.")
 
-}).catch(error => console.log(error))
+        // start express server
+        app.listen(port, () => console.log(`Express server has started on port ${port}`))
+    })
+    .catch(error => console.log(error))
+

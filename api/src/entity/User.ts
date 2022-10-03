@@ -1,17 +1,42 @@
-import { Entity, Column, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import {
+    Entity,
+    Column,
+    OneToMany,
+    PrimaryGeneratedColumn,
+    Unique,
+    CreateDateColumn,
+    UpdateDateColumn
+} from "typeorm";
 import { Person } from "./Person";
-import { Subscription, SUBSCRIPTION_TYPE } from './Subscription';
+import { IsNotEmpty, Length } from 'class-validator';
+import * as bcrypt from "bcrypt";
+import { Subscription } from './Subscription';
 import { NumTel } from './NumTel';
 
-@Entity({name: 'users'})
+@Entity()
+@Unique(["email"])
 export class User extends Person {
-    @PrimaryGeneratedColumn("uuid")
-    id: string;
+    @PrimaryGeneratedColumn()
+    id: number;
 
-    @Column({
-        type: "varchar"
-    })
-    mail!: string;
+    @Column()
+    email: string;
+
+    @Column()
+    @Length(6, 100)
+    password: string;
+
+    @Column()
+    @IsNotEmpty()
+    role: string;
+
+    @Column()
+    @CreateDateColumn()
+    createdAt: Date;
+
+    @Column()
+    @UpdateDateColumn()
+    updatedAt: Date;
 
     @OneToMany(() => Subscription, (subscription: Subscription) => subscription.user, { cascade: true })
     subscriptions!: Subscription[];
@@ -19,10 +44,19 @@ export class User extends Person {
     @OneToMany(() => NumTel, (num: NumTel) => num.user, { cascade: true })
     numTel!: NumTel[];
 
+    hashPassword() {
+        this.password = bcrypt.hashSync(this.password, 8);
+    }
 
-    constructor(firstName: string, lastName: string, dateOfBirth: Date, mail: string) {
-        super(firstName, lastName, dateOfBirth);
-        this.mail = mail;
+    checkIfUnencryptedPasswordIsValid(unencryptedPassword: string) {
+        return bcrypt.compareSync(unencryptedPassword, this.password);
+    }
+
+
+    constructor(firstName: string, lastName: string, BirthDate: Date, email: string, role: string) {
+        super(firstName, lastName, BirthDate);
+        this.email = email;
+        this.role = role;
     }
 }
 //subscription tkn entité hafa
