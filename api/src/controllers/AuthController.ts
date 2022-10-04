@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import * as jwt from "jsonwebtoken";
-import { getRepository } from "typeorm";
 import { validate } from "class-validator";
 import { User } from "../entity/User";
 import config from "../config/config";
@@ -10,8 +9,8 @@ class AuthController {
 
     static login = async (req: Request, res: Response) => {
         //check if username and password are set
-        let { email, password } = req.body;
-        if (!(email && password)) {
+        let { mail, password } = req.body;
+        if (!(mail && password)) {
             res.status(401).send();
         }
 
@@ -19,7 +18,7 @@ class AuthController {
         const userRepository = AppDataSource.getRepository(User);
         let user!: User;
         try {
-            user = await userRepository.findOneOrFail({ where: { email: email } });
+            user = await userRepository.findOneOrFail({ where: { mail: mail } });
         } catch (error) {
             res.status(401).send();
         }
@@ -32,7 +31,7 @@ class AuthController {
 
         //sign JWT, valid for 1 hour
         const token = jwt.sign(
-            { userId: user.id, email: user.email },
+            { userId: user.id, mail: user.mail },
             config.jwtSecret,
             { expiresIn: 3600 }
         );
@@ -43,7 +42,7 @@ class AuthController {
             .json({
                 user: {
                     id: user.id,
-                    email: user.email
+                    mail: user.mail
                 },
                 message: "Login successfull",
                 accessToken: token,
@@ -64,7 +63,7 @@ class AuthController {
         let user!: User;
         try {
             user = await userRepository.findOneOrFail({ where: { id } });
-        } catch (id) {
+        } catch (err) {
             res.status(401).send();
         }
 

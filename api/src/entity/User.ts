@@ -15,13 +15,13 @@ import { NumTel } from './NumTel';
 import { BookCheckout } from "./BookCheckout";
 
 @Entity({ name: 'users' })
-@Unique(["email"])
+@Unique(["mail"])
 export class User extends Person {
     @PrimaryGeneratedColumn()
     id: number;
 
     @Column()
-    email: string;
+    mail: string;
 
     @Column()
     @Length(6, 100)
@@ -48,7 +48,7 @@ export class User extends Person {
     @OneToMany(() => BookCheckout, (checkout: BookCheckout) => checkout.user)
     checkouts: BookCheckout[];
     
-    hashPassword() {
+    hashPassword(){
         this.password = bcrypt.hashSync(this.password, 8);
     }
 
@@ -57,10 +57,11 @@ export class User extends Person {
     }
 
 
-    constructor(firstName: string, lastName: string, BirthDate: Date, email: string, role: string) {
+    constructor(firstName: string, lastName: string, BirthDate: Date, email: string, role: string, pswd: string) {
         super(firstName, lastName, BirthDate);
-        this.email = email;
+        this.mail = email;
         this.role = role;
+        this.password= pswd;
     }
 }
 //subscription tkn entité hafa

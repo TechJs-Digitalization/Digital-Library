@@ -10,7 +10,7 @@ export class UserController {
         //get user from database
         const userRepository = AppDataSource.getRepository(User);
         const users = await userRepository.find(
-            { select: ["id", "firstName", "lastName", "BirthDate", "email", "role"] }
+            { select: ["id", "firstName", "lastName", "dateOfBirth", "mail", "role"] }
         );
 
         //send the users object
@@ -25,7 +25,7 @@ export class UserController {
         const userRepository = AppDataSource.getRepository(User);
         try {
             let user = await userRepository.findOneOrFail({
-                select: ["id", "firstName", "lastName", "BirthDate", "email", "role"],
+                select: ["id", "firstName", "lastName", "dateOfBirth", "mail", "role"],
                 where: { id: id }
             });
 
@@ -38,8 +38,8 @@ export class UserController {
 
     static newUser = async (req: Request, res: Response) => {
         //get parameters from the body
-        const { firstName, lastName, BirthDate, email, password, role } = req.body;
-        let user = new User(firstName, lastName, BirthDate, email, role);
+        const { firstName, lastName, dateOfBirth, mail, password, role } = req.body;
+        let user = new User(firstName, lastName, dateOfBirth, mail, role);
         user.password = password;
 
         //validate if the parameters are ok
@@ -68,7 +68,7 @@ export class UserController {
         const id: number = parseInt(req.params.body, 10);
 
         //get values from the body
-        const { firstName, lastName, BirthDate, email, role } = req.body;
+        const { firstName, lastName, dateOfBirth, mail, role } = req.body;
 
         //try to find user on database
         const userRepository = AppDataSource.getRepository(User);
@@ -82,7 +82,7 @@ export class UserController {
         }
 
         //validate the new values on model
-        user = new User(firstName, lastName, BirthDate, email, role)
+        user = new User(firstName, lastName, dateOfBirth, mail, role)
         const errors = await validate(user);
         if (errors.length > 0) {
             res.status(400).send(errors);

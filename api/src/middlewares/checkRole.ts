@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from "express";
-import { getRepository } from "typeorm";
 import { AppDataSource } from "../data-source";
 import { User } from "../entity/User";
 
