@@ -11,10 +11,9 @@ PORT= Replace_the_port_address_where_the_server_gonna_be_launched
 ```
 **NB: Those values that you gonna replace don't need to be inside quotes or double quotes** 
 - `npx tsc` to convert those TS file into JS
-- the "index.ts" file doesn't launch the server yet, I just tested to insert a record of an User to the DB using those Entity
-- **TODO:** Create an entity where the info about all lending book.
+- **TODO:** Create lending book syste.
 
-- **NB:** After creating that entity, create separated branch from the `master` branch per fonctionnality
+- **NB:** Create separated branch from the `master` branch per fonctionnality
 
  ****ADMIN****
 - email:"admin@gmail.com"
