@@ -80,31 +80,31 @@ export default class BookController {
         }
     }
 
-    static async update(id: number, title: string, synopsis: string, author: number | null, available: number, category: number | null, coverPic?: string) {
-        if (coverPic)
-            await BookController.#repository.update({ id: id }, {
-                title: title,
-                available: available,
-                synopsis: synopsis,
-                coverPic: coverPic,
-            });
-        else
-            await BookController.#repository.update({ id: id }, {
-                title: title,
-                available: available,
-                synopsis: synopsis,
-            });
+    // static async update(id: number, title: string, synopsis: string, author: number | null, available: number, category: number | null, coverPic?: string) {
+    //     if (coverPic)
+    //         await BookController.#repository.update({ id: id }, {
+    //             title: title,
+    //             available: available,
+    //             synopsis: synopsis,
+    //             coverPic: coverPic,
+    //         });
+    //     else
+    //         await BookController.#repository.update({ id: id }, {
+    //             title: title,
+    //             available: available,
+    //             synopsis: synopsis,
+    //         });
 
-        await BookController.#repository.createQueryBuilder()
-            .relation('author')
-            .of(id)
-            .set(author)
+    //     await BookController.#repository.createQueryBuilder()
+    //         .relation('author')
+    //         .of(id)
+    //         .set(author)
 
-        await BookController.#repository.createQueryBuilder()
-            .relation('category')
-            .of(id)
-            .set(category);
-    }
+    //     await BookController.#repository.createQueryBuilder()
+    //         .relation('category')
+    //         .of(id)
+    //         .set(category);
+    // }
 
     static async getCoverPicture(id: number): Promise<string | null> {
         const result = await BookController.#repository.findOne({
