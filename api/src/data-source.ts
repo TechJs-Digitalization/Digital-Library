@@ -17,6 +17,7 @@ import { SubscriptionType } from "./entity/SubscriptionType";
 import { AuthorPicture } from "./entity/AuthorPicture";
 
 export const AppDataSource = new DataSource({
+    name: "default",
     type: "postgres",
     host: "localhost",
     port: Number(process.env.DB_PORT),
@@ -26,6 +27,7 @@ export const AppDataSource = new DataSource({
     synchronize: true,
     logging: false,
     entities: [User, Author, AuthorPicture, NumTel, Book, BookCategory, BookPicture, BookCheckout, Subscription, NomDePlume, SubscriptionType],
-    migrations: [],
+    migrationsTableName: "migrations",
+    migrations: ["src/migration/**/*.ts"],
     subscribers: [],
 })
