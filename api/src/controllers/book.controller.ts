@@ -2,13 +2,9 @@ import { NextFunction, Request, Response } from "express";
 import { join } from "path";
 import { Repository } from "typeorm";
 import { AppDataSource } from "../data-source";
-import { Author } from "../entity/Author";
 import { Book } from "../entity/Book";
-import { BookCategory } from "../entity/BookCategory";
 import { BookPicture } from "../entity/BookPicture";
 import { getBasenames } from "../services/fileUpload";
-import { forceStringType } from "../services/typeNarrowing";
-import { bookPictureController } from "./bookPicture.controller";
 
 export default class BookController {
     static #repository: Repository<Book>;
@@ -17,39 +13,44 @@ export default class BookController {
     }
     static readonly pictureDir = join(__dirname, '..', '..', 'public', 'bookPictures');
 
-    static async get(id: number): Promise<Book | null> {
-        let result = await BookController.#repository.findOne({
-            relations: {
-                category: true,
-                author: {
-                    nomDePlumes: true
+    static async getById(req: Request, res: Response, next: NextFunction){
+        const id= Number(req.params.id);
+        if(Number.isInteger(id)){
+            let result = await BookController.#repository.findOne({
+                relations: {
+                    category: true,
+                    author: {
+                        nomDePlumes: true
+                    },
+                    bookPics: true
                 },
-                bookPics: true
-            },
-            select: {
-                author: {
-                    id: true,
-                    firstName: true,
-                    lastName: true,
-                    nomDePlumes: {
-                        value: true
+                select: {
+                    author: {
+                        id: true,
+                        firstName: true,
+                        lastName: true,
+                        nomDePlumes: {
+                            value: true
+                        }
+                    },
+                    bookPics: {
+                        fileName: true
                     }
                 },
-                bookPics: {
-                    fileName: true
+                where: {
+                    id: id
                 }
-            },
-            where: {
-                id: id
-            }
-        })
-        if (result) {
-            result.coverPic = '/bookPictures/' + result.coverPic;
+            })
+            if (result) {
+                result.coverPic = '/bookPictures/' + result.coverPic;
+    
+                if (result.bookPics)
+                    result.bookPics.forEach(pic => pic.fileName = '/bookPictures/' + pic.fileName);
 
-            if (result.bookPics)
-                result.bookPics.forEach(pic => pic.fileName = '/bookPictures/' + pic.fileName);
+                return res.status(200).json({ err: false, data: result });
+            }
         }
-        return result;
+        res.status(404).json({ err: true, msg: 'Book not found' });
     }
 
 
@@ -57,16 +58,15 @@ export default class BookController {
         if (!req.files.cover) return next(new Error('Please upload a cover picture file'));
         if (!req.files.pictures) return next(new Error('Please upload at least one illustration picture file'));
 
-        const [title, synopsis] = forceStringType(req.fields.title, req.fields.synopsis);
-        const coverName = getBasenames(('size' in req.files.cover) ? req.files.cover : req.files.cover[0])!;
-        const picsNames = getBasenames(...('length' in req.files.pictures) ? req.files.pictures : [req.files.pictures])!;
-        const available= Number(req.fields.available);        
+        const [title, synopsis, available] = [req.fields.title[0]!, req.fields.synopsis[0]!, req.fields.available[0]!];
+        const coverName = getBasenames(...req.files.cover)!;
+        const picsNames = getBasenames(...req.files.pictures)!; 
         const pics= picsNames.map(pic => new BookPicture(pic));
 
         try {
             await BookController.#repository.save({
                 title: title,
-                available: available,
+                available: Number(available),
                 coverPic: coverName[0],
                 synopsis: synopsis,
                 author: {id: Number(req.fields.authorId)},

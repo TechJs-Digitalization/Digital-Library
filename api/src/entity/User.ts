@@ -47,6 +47,7 @@ export class User extends Person {
 
     @OneToMany(() => BookCheckout, (checkout: BookCheckout) => checkout.user)
     checkouts: BookCheckout[];
+    
     hashPassword() {
         this.password = bcrypt.hashSync(this.password, 8);
     }
