@@ -3,7 +3,7 @@
 2. setup database setting inside data-source.ts file
 3. run "npm run migration:run"
 
-#*****TEST******
+#	TEST
 4. run "npm run dev"
 #	login
 5. http://localhost:5000/auth/login (method:POST)
@@ -11,7 +11,7 @@
 7. {
 8.	"email":"admin@gmail.com"
 9.	"password":"admin"
-10 .}
+10. }
 11. SEND the request
 
 	change-password
