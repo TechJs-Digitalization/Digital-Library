@@ -1,18 +1,18 @@
-*************API REST with expressJS,typescript,postgres,typeORM***********
+#API REST with expressJS,typescript,postgres,typeORM***********
 1. run npm i
 2. setup database setting inside data-source.ts file
 3.run "npm run migration:run"
 
-4.******TEST******
+#*****TEST******
 5.run "npm run dev"
 	login
--http://localhost:5000/auth/login (method:POST)
--body-> Json->
-{
-	"email":"admin@gmail.com"
-	"password":"admin"
-}
--SEND the request
+#http://localhost:5000/auth/login (method:POST)
+#body-> Json->
+#{
+#	"email":"admin@gmail.com"
+#	"password":"admin"
+#}
+#SEND the request
 
 	change-password
 -first,we need to sign in with an valid credentials(identifiants)
