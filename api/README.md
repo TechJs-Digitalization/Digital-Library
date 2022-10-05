@@ -9,10 +9,10 @@
 5. http://localhost:5000/auth/login (method:POST)
 6. body-> Json->
 7. {
-#	"email":"admin@gmail.com"
-#	"password":"admin"
-#}
-#SEND the request
+8.	"email":"admin@gmail.com"
+9.	"password":"admin"
+10 .}
+11. SEND the request
 
 	change-password
 -first,we need to sign in with an valid credentials(identifiants)
