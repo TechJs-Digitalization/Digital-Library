@@ -1,13 +1,81 @@
-# API REST with expressJS and Typescript
+*************API REST with expressJS,typescript,postgres,typeORM***********
+1. run npm i
+2. setup database setting inside data-source.ts file
+3.run "npm run migration:run"
 
-Steps to run this project:
+4.******TEST******
+5.run "npm run dev"
+	login
+-http://localhost:5000/auth/login (method:POST)
+-body-> Json->
+{
+	"email":"admin@gmail.com"
+	"password":"admin"
+}
+-SEND the request
 
-1. Run `npm i` command
-2. Setup database settings inside `data-source.ts` file
-3. Run `npm run dev` command
+	change-password
+-first,we need to sign in with an valid credentials(identifiants)
+-take the token generated on the body response
+-http://localhost:5000/auth/change-password (method:POST)
+-body-> Json->
+{
+	"oldPassword":"admin"
+	"newPassword":"newAdminPass"
+}
+-set on header->Authorization   value:(token generated)
+-SEND the request
 
+	list all users
+-we need to authenticate as an ADMIN
+-take the token generated on the body response
+-http://localhost:5000/users/ (method: GET)
+-set on header->Authorization   value:(token generated)
+-SEND the request
 
-4. ****ADMIN****
-    email:"admin@gmail.com",
-    password:"admin"
-5. when testing the authroutes, take the token on the body(json) and set it to the header Authorization
+	show one user by ID
+-we need to authenticate as an ADMIN
+-take the token generated on the body response
+-http://localhost:5000/users/id (method: GET)
+--set on header->Authorization ->value:(token generated)
+-SEND the request
+
+	create a new user
+-we need to authenticate as an ADMIN
+-take the token generated on the body response
+-http://localhost:5000/users/ (method: POST)
+-body-> Json->
+{
+	"firstname":"...",
+	"lastname":"....",
+	"BirthDate":"year-month-day",
+	"email":"....@gmail.com",
+	"password":"admin",
+	"role":"USER,ADMIN,..."
+}
+-set on header->Authorization ->value:(token generated)
+-SEND the request
+
+	edit user
+-we need to authenticate as an ADMIN
+-take the token generated on the body response
+-http://localhost:5000/users/id (method: PATCH)
+-body-> Json->
+{
+	"firstname":"...",
+	"lastname":"....",
+	"BirthDate":"year-month-day",
+	"email":"....@gmail.com",
+	"password":"admin",
+	"role":"USER,ADMIN,..."
+}
+--set on header->Authorization ->value:(token generated)
+-SEND the request
+
+	delete one user
+-we need to authenticate as an ADMIN
+-take the token generated on the body response
+-http://localhost:5000/users/id (method: DELETE)
+-set on header->Authorization ->value:(token generated)
+-SEND the request
+
