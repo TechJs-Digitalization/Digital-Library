@@ -2,7 +2,6 @@ import { Check, Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGenerat
 import { BookCategory } from "./BookCategory";
 import { Author } from "./Author";
 import { BookCheckout } from "./BookCheckout";
-import { BookPicture } from "./BookPicture";
 
 @Entity()
 @Check(`"available">=0`)
@@ -22,14 +21,11 @@ export class Book{
     @Column('varchar')
     coverPic!: string;
 
-    @OneToMany(()=>BookPicture, (bookPic: BookPicture)=>bookPic.book, {cascade: true})
-    bookPics: BookPicture[];
-
     @ManyToOne(()=>BookCategory, (category: BookCategory)=>category.books)
-    category: BookCategory;
+    category!: BookCategory;
 
     @ManyToOne(()=>Author, (author: Author)=>author.books)
-    author: Author;
+    author!: Author;
 
     @ManyToMany(()=>BookCheckout)
     bookChekouts: BookCheckout[];

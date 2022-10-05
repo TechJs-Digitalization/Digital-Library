@@ -10,7 +10,6 @@ import { NumTel } from "./entity/NumTel"
 import { Book } from "./entity/Book"
 import { BookCategory } from "./entity/BookCategory"
 import { Subscription } from './entity/Subscription'
-import { BookPicture } from "./entity/BookPicture";
 import { BookCheckout } from "./entity/BookCheckout";
 import { NomDePlume } from "./entity/NomDePlume";
 import { SubscriptionType } from "./entity/SubscriptionType";
@@ -26,7 +25,7 @@ export const AppDataSource = new DataSource({
     database: process.env.DB_NAME,
     synchronize: true,
     logging: false,
-    entities: [User, Author, AuthorPicture, NumTel, Book, BookCategory, BookPicture, BookCheckout, Subscription, NomDePlume, SubscriptionType],
+    entities: [User, Author, AuthorPicture, NumTel, Book, BookCategory, BookCheckout, Subscription, NomDePlume, SubscriptionType],
     migrationsTableName: "migrations",
     migrations: ["src/migration/**/*.ts"],
     subscribers: [],

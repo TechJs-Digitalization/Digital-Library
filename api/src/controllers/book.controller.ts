@@ -3,7 +3,6 @@ import { join } from "path";
 import { Repository } from "typeorm";
 import { AppDataSource } from "../data-source";
 import { Book } from "../entity/Book";
-import { BookPicture } from "../entity/BookPicture";
 import { getBasenames } from "../services/fileUpload";
 
 export default class BookController {
@@ -21,8 +20,7 @@ export default class BookController {
                     category: true,
                     author: {
                         nomDePlumes: true
-                    },
-                    bookPics: true
+                    }
                 },
                 select: {
                     author: {
@@ -32,9 +30,6 @@ export default class BookController {
                         nomDePlumes: {
                             value: true
                         }
-                    },
-                    bookPics: {
-                        fileName: true
                     }
                 },
                 where: {
@@ -42,11 +37,8 @@ export default class BookController {
                 }
             })
             if (result) {
-                result.coverPic = '/bookPictures/' + result.coverPic;
+                result.coverPic = '/public/bookPictures/' + result.coverPic;
     
-                if (result.bookPics)
-                    result.bookPics.forEach(pic => pic.fileName = '/bookPictures/' + pic.fileName);
-
                 return res.status(200).json({ err: false, data: result });
             }
         }
@@ -56,12 +48,9 @@ export default class BookController {
 
     static async save(req: Request, res: Response, next: NextFunction) {
         if (!req.files.cover) return next(new Error('Please upload a cover picture file'));
-        if (!req.files.pictures) return next(new Error('Please upload at least one illustration picture file'));
 
         const [title, synopsis, available] = [req.fields.title[0]!, req.fields.synopsis[0]!, req.fields.available[0]!];
         const coverName = getBasenames(...req.files.cover)!;
-        const picsNames = getBasenames(...req.files.pictures)!; 
-        const pics= picsNames.map(pic => new BookPicture(pic));
 
         try {
             await BookController.#repository.save({
@@ -70,8 +59,7 @@ export default class BookController {
                 coverPic: coverName[0],
                 synopsis: synopsis,
                 author: {id: Number(req.fields.author)},
-                category: {id: Number(req.fields.category)},
-                bookPics: pics,
+                category: {id: Number(req.fields.category)}
             })
             res.status(201).json({ err: false, msg: 'Book successfully created' });
         } catch (error) {
@@ -105,18 +93,6 @@ export default class BookController {
     //         .of(id)
     //         .set(category);
     // }
-
-    static async getCoverPicture(id: number): Promise<string | null> {
-        const result = await BookController.#repository.findOne({
-            where: { id: id },
-            select: { coverPic: true }
-        })
-
-        if (result)
-            return join(BookController.pictureDir, result.coverPic);
-
-        return null;
-    }
 
     static async verifyBookExist(id: number): Promise<boolean> {
         const book = await BookController.#repository.preload({
