@@ -21,7 +21,7 @@
 15. body-> Json->
 16. {
 17. 	"oldPassword":"admin"
-18.	"newPassword":"newAdminPass"
+18.	  "newPassword":"newAdminPass"
 19. }
 20. set on header->Authorization   value:(token generated)
 21. SEND the request
