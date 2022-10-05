@@ -20,8 +20,8 @@
 14. launch http://localhost:5000/auth/change-password (method:POST)
 15. body-> Json->
 16. {
-17. 	"oldPassword":"admin"
-18.	  "newPassword":"newAdminPass"
+17. "oldPassword":"admin"
+18. "newPassword":"newAdminPass"
 19. }
 20. set on header->Authorization   value:(token generated)
 21. SEND the request
