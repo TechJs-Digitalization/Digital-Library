@@ -69,8 +69,8 @@ export default class BookController {
                 available: Number(available),
                 coverPic: coverName[0],
                 synopsis: synopsis,
-                author: {id: Number(req.fields.authorId)},
-                category: {id: Number(req.fields.categoryId)},
+                author: {id: Number(req.fields.author)},
+                category: {id: Number(req.fields.category)},
                 bookPics: pics,
             })
             res.status(201).json({ err: false, msg: 'Book successfully created' });
@@ -126,11 +126,11 @@ export default class BookController {
         return (book != undefined);
     }
 
-    static async verifyIfExistByAuthor(title: string, authorId: number) {
+    static async verifyIfExistByAuthor(title: string, author: number) {
         const found = await BookController.#repository.createQueryBuilder('book')
             .leftJoin('book.author', 'author')
             .select(['book.title'])
-            .where('author.id= :id', { id: authorId })
+            .where('author.id= :id', { id: author })
             .andWhere('book.title= :t', { t: title })
             .getOne()
         return (found != null);

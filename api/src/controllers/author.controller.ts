@@ -2,21 +2,20 @@ import { Repository } from "typeorm";
 import { AppDataSource } from "../data-source";
 import { Author } from "../entity/Author";
 
-class AuthorController {
-    private readonly repository: Repository<Author>;
-
-    constructor() {
-        this.repository = AppDataSource.getRepository(Author);
+export class AuthorController {
+    static #repository: Repository<Author>;
+    static {
+        AuthorController.#repository = AppDataSource.getRepository(Author);
     }
 
-    public async get(id: number){
-        return this.repository.findOne({
+    static async get(id: number){
+        return AuthorController.#repository.findOne({
             where: {id: id}
         })
     }
     
-    public async getWithAuthorPics(id: number): Promise<Author | null>{
-        return this.repository.findOne({
+    static async getWithAuthorPics(id: number): Promise<Author | null>{
+        return AuthorController.#repository.findOne({
             where: {id: id},
             relations: {
                 authorPics: true,
@@ -27,6 +26,12 @@ class AuthorController {
         })
     }
 
-}
+    static async verifyAuthorExist(id: number): Promise<boolean> {
+        const author = await AuthorController.#repository.preload({
+            id: id
+        });
 
-export const authorController= new AuthorController();
+        return (author != undefined);
+    }
+
+}
