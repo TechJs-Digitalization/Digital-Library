@@ -25,6 +25,8 @@ bookRouter
 
     .post('/', frommidableParse, bookVerification.verify, BookController.save)
 
+    .put('/:id', frommidableParse, BookController.update)
+
 /* .put('/:id', [frommidableParse, bookVerification.verify], async (req: Request, res: Response) => {
     const form = formidable({
         allowEmptyFiles: false,
@@ -72,7 +74,6 @@ bookRouter
     })
 }) */
     .use((err: Error, req: Request, res: Response, next: NextFunction) => {
-        res.status(400).json({ err: true, msg: err.message })
         if ('files' in req)
             next(err)
     }, deleteFileOnError)

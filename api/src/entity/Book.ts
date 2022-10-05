@@ -19,7 +19,7 @@ export class Book{
     synopsis!: string;
 
     @Column('varchar')
-    coverPic!: string;
+    coverPicture!: string;
 
     @ManyToOne(()=>BookCategory, (category: BookCategory)=>category.books)
     category!: BookCategory;

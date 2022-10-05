@@ -3,6 +3,7 @@ import { join } from "path";
 import { Repository } from "typeorm";
 import { AppDataSource } from "../data-source";
 import { Book } from "../entity/Book";
+import { BookCategory } from "../entity/BookCategory";
 import { getBasenames } from "../services/fileUpload";
 
 export default class BookController {
@@ -37,7 +38,7 @@ export default class BookController {
                 }
             })
             if (result) {
-                result.coverPic = '/public/bookPictures/' + result.coverPic;
+                result.coverPicture = '/public/bookPictures/' + result.coverPicture;
     
                 return res.status(200).json({ err: false, data: result });
             }
@@ -47,52 +48,67 @@ export default class BookController {
 
 
     static async save(req: Request, res: Response, next: NextFunction) {
-        if (!req.files.cover) return next(new Error('Please upload a cover picture file'));
+        if (!req.files.cover) {
+            res.status(400).json({err: true, msg: 'Please upload a cover picture file'})
+            return next({});
+        }
 
         const [title, synopsis, available] = [req.fields.title[0]!, req.fields.synopsis[0]!, req.fields.available[0]!];
-        const coverName = getBasenames(...req.files.cover)!;
+        const coverName = req.files.cover[0].newFilename;
 
         try {
             await BookController.#repository.save({
                 title: title,
                 available: Number(available),
-                coverPic: coverName[0],
+                coverPicture: coverName,
                 synopsis: synopsis,
                 author: {id: Number(req.fields.author)},
                 category: {id: Number(req.fields.category)}
             })
             res.status(201).json({ err: false, msg: 'Book successfully created' });
         } catch (error) {
-            if(error instanceof Error)
-                next(error);
+            res.status(500).json({err: true, msg: 'Something broke'})
+            next(error);
         }
     }
 
-    // static async update(id: number, title: string, synopsis: string, author: number | null, available: number, category: number | null, coverPic?: string) {
-    //     if (coverPic)
-    //         await BookController.#repository.update({ id: id }, {
-    //             title: title,
-    //             available: available,
-    //             synopsis: synopsis,
-    //             coverPic: coverPic,
-    //         });
-    //     else
-    //         await BookController.#repository.update({ id: id }, {
-    //             title: title,
-    //             available: available,
-    //             synopsis: synopsis,
-    //         });
+    static async update(req: Request, res: Response, next: NextFunction) {
+        const id= Number(req.params.id);
+        let bookUpdate: {[keys: string]: any}= {};
+        const tmp= new Book();
+        for(let prop in req.fields){
+            if(prop in tmp && req.fields[prop][0]){
+                switch (prop) {
+                    case "available":
+                        bookUpdate[prop]= Number(req.fields[prop][0]);
+                        break;
 
-    //     await BookController.#repository.createQueryBuilder()
-    //         .relation('author')
-    //         .of(id)
-    //         .set(author)
+                    case "category":
+                    case "author":
+                        bookUpdate[prop]= {id: Number(req.fields[prop][0]!)};
+                        break;
+                
+                    default:
+                        if(prop != "bookCheckout" && prop != "coverPic")
+                            bookUpdate[prop]= req.fields[prop][0];
+                        break;
+                }
+            }
+        }
+        if('cover' in req.files)
+            bookUpdate.coverPicture= req.files.cover[0].newFilename;
 
-    //     await BookController.#repository.createQueryBuilder()
-    //         .relation('category')
-    //         .of(id)
-    //         .set(category);
-    // }
+        try {
+            await BookController.#repository.update({id: id}, bookUpdate)
+        } catch (error) {
+            res.status(500).json({err: true, msg: 'Something broke'});
+            return next(error);
+        }
+
+        const msg= `Book updated: ${Object.keys(bookUpdate).join(', ')} updated.`;
+
+        res.status(200).json({err: false, msg: msg})
+    }
 
     static async verifyBookExist(id: number): Promise<boolean> {
         const book = await BookController.#repository.preload({
