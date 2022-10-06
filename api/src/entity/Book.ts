@@ -12,6 +12,9 @@ export class Book{
     @Column('varchar')
     title!: string;
 
+    @Column('boolean')
+    dispo!: boolean;
+
     @Column()
     available!: number;
 

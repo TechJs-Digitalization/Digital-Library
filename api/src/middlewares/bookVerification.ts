@@ -133,6 +133,14 @@ export async function verify(req: Request, res: Response, next: NextFunction) {
         return next({})
     }
 
+    if(req.fields.dispo && req.fields.dispo[0]){
+        if(req.fields.dipso[0].toLowerCase()!='true' && req.fields.dipso[0].toLowerCase()!='false'){
+            res.status(400).json('The "dispo" field should have true or false as value')
+            return next({})
+        }
+    }
+    else req.fields.dispo=[];
+
     //verify if the category exist
     if(req.fields.category){
         if(await categoryIsInvalid(req, res, next)) return;
@@ -197,6 +205,14 @@ export async function beforeUpdateOperation(req: Request, res: Response, next: N
     if(req.fields.synopsis){
         if(synopsisIsIvalid(req, res, next)) return;
     }
+
+    if(req.fields.dispo && req.fields.dispo[0]){
+        if(req.fields.dipso[0]!='true' && req.fields.dipso[0]!='false'){
+            res.status(400).json('The "dispo" field should have true or false as value')
+            return next({})
+        }
+    }
+    else req.fields.dispo=[];
     
     //verify if available isn't in field object or is null
     if(req.fields.available){
@@ -231,13 +247,17 @@ export async function beforeUpdateOperation(req: Request, res: Response, next: N
             return next({})
         }
     }
+
+    if(req.files.cover){
+        if(coverIsInvalid(req, res, next)) return; 
+        try {
+            await deleteFile(join(BookController.pictureDir, basename(bookInitial.coverPicture)))
+        } catch (error) {
+            res.status(500).json({err: true, msg: 'Internal server error'})
+            return next({})
+        }
+    }   
     
-    try {
-        await deleteFile(join(BookController.pictureDir, basename(bookInitial.coverPicture)))
-    } catch (error) {
-        res.status(500).json({err: true, msg: 'Internal server error'})
-        return next({})
-    }
 
     next();
 

@@ -48,6 +48,7 @@ export default class BookController {
             await BookController.repository.save({
                 title: title,
                 available: Number(available),
+                dispo: req.fields.dispo[0]==='true',
                 coverPicture: coverName,
                 synopsis: synopsis,
                 author: {id: Number(req.fields.author)},
@@ -65,10 +66,15 @@ export default class BookController {
         let bookUpdate: {[keys: string]: any}= {};
         const tmp= new Book();
         for(let prop in req.fields){
-            if(prop in tmp && req.fields[prop][0]){
+            
+            if(prop in tmp){
                 switch (prop) {
                     case "available":
                         bookUpdate[prop]= Number(req.fields[prop][0]);
+                        break;
+                        
+                    case "dispo":
+                        bookUpdate[prop]= (req.fields.dispo[0]==='true');
                         break;
 
                     case "category":
@@ -89,7 +95,7 @@ export default class BookController {
         try {
             await BookController.repository.update({id: id}, bookUpdate)
         } catch (error) {
-            res.status(500).json({err: true, msg: 'Something broke'});
+            res.status(500).json({err: true, msg: error});
             return next(error);
         }
 
@@ -98,7 +104,7 @@ export default class BookController {
         res.status(200).json({err: false, msg: msg})
     }
 
-    static async delete(req: Request, res: Response, next: NextFunction){
+    static async delete(req: Request, res: Response){
         await BookController.repository.delete(Number(req.params.id));
         res.status(200).json({err: false, msg: 'Book deleted successful'})
     }
