@@ -18,7 +18,6 @@ export class AuthorController {
         return AuthorController.#repository.findOne({
             where: {id: id},
             relations: {
-                authorPics: true,
                 nomDePlumes: {
                     value: true
                 }
