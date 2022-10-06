@@ -27,11 +27,11 @@ export class Book{
     @ManyToOne(()=>Author, (author: Author)=>author.books)
     author!: Author;
 
-    @ManyToMany(()=>BookCheckout)
+    @ManyToMany(()=>BookCheckout, {cascade: ["remove"]})
     bookChekouts: BookCheckout[];
 
     @AfterLoad()
-    updateCoverPath(){
+    rectifyCoverPath(){
         this.coverPicture= '/public/bookPictures/' + this.coverPicture;
     }
 }

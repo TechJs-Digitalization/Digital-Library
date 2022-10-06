@@ -7,16 +7,13 @@ import { BookCategory } from "../entity/BookCategory";
 import { getBasenames } from "../services/fileUpload";
 
 export default class BookController {
-    static #repository: Repository<Book>;
-    static {
-        BookController.#repository = AppDataSource.getRepository(Book);
-    }
+    static repository= AppDataSource.getRepository(Book);
     static readonly pictureDir = join(__dirname, '..', '..', 'public', 'bookPictures');
 
     static async getById(req: Request, res: Response, next: NextFunction){
         const id= Number(req.params.id);
         if(Number.isInteger(id)){
-            let result = await BookController.#repository.findOne({
+            let result = await BookController.repository.findOne({
                 relations: {
                     category: true,
                     author: {
@@ -48,7 +45,7 @@ export default class BookController {
         const coverName = req.files.cover[0].newFilename;
 
         try {
-            await BookController.#repository.save({
+            await BookController.repository.save({
                 title: title,
                 available: Number(available),
                 coverPicture: coverName,
@@ -90,7 +87,7 @@ export default class BookController {
             bookUpdate.coverPicture= req.files.cover[0].newFilename;
 
         try {
-            await BookController.#repository.update({id: id}, bookUpdate)
+            await BookController.repository.update({id: id}, bookUpdate)
         } catch (error) {
             res.status(500).json({err: true, msg: 'Something broke'});
             return next(error);
@@ -101,8 +98,13 @@ export default class BookController {
         res.status(200).json({err: false, msg: msg})
     }
 
+    static async delete(req: Request, res: Response, next: NextFunction){
+        await BookController.repository.delete(Number(req.params.id));
+        res.status(200).json({err: false, msg: 'Book deleted successful'})
+    }
+
     static async verifyBookExist(id: number): Promise<boolean> {
-        const book = await BookController.#repository.preload({
+        const book = await BookController.repository.preload({
             id: id
         });
 
@@ -110,7 +112,7 @@ export default class BookController {
     }
 
     static async verifyIfExistByAuthor(title: string, author: number) {
-        const found = await BookController.#repository.createQueryBuilder('book')
+        const found = await BookController.repository.createQueryBuilder('book')
             .leftJoin('book.author', 'author')
             .select(['book.title'])
             .where('author.id= :id', { id: author })

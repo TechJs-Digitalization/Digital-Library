@@ -9,6 +9,6 @@ export class BookCategory{
     @Column({type: 'varchar', unique: true})
     name!: string;
 
-    @OneToMany(()=>Book, (book: Book)=>book.category)
+    @OneToMany(()=>Book, (book: Book)=>book.category, {cascade:['remove']})
     books: Book[];
 }

@@ -169,7 +169,7 @@ export async function verify(req: Request, res: Response, next: NextFunction) {
     next();
 }
 
-export async function updateVerification(req: Request, res: Response, next: NextFunction){
+export async function beforeUpdateOperation(req: Request, res: Response, next: NextFunction){
     const bookId= Number(req.params.id);
     if(Number.isNaN(bookId)){
         res.status(400).json({err: true, msg: 'ID invalid'})
@@ -233,14 +233,39 @@ export async function updateVerification(req: Request, res: Response, next: Next
     }
     
     try {
-        console.log(bookInitial.coverPicture);
-        
         await deleteFile(join(BookController.pictureDir, basename(bookInitial.coverPicture)))
     } catch (error) {
-        res.status(500).json({err: true, msg: error})
+        res.status(500).json({err: true, msg: 'Internal server error'})
         return next({})
     }
 
     next();
 
+}
+
+export async function beforeDeleteOperation(req: Request, res: Response, next: NextFunction){
+    const bookId= Number(req.params.id);
+    if(Number.isNaN(bookId)){
+        res.status(400).json({err: true, msg: 'ID invalid'});
+        return next({})
+    }
+    else{
+        const book= await BookController.repository.findOne({
+            select: ['coverPicture'],
+            where: {id: bookId}
+        });
+        if(book){
+            try {
+                await deleteFile(join(BookController.pictureDir, basename(book.coverPicture)))
+                return next();
+            } catch (error) {
+                res.status(500).json({err: true, msg: 'Internal server error'})
+                return next({})
+            }
+        }
+        else{
+            res.status(404).json({err: true, msg: 'Book with current ID not found'});
+            return next({});
+        }
+    }
 }

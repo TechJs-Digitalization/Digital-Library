@@ -18,10 +18,10 @@ export class Author extends Person{
     @OneToMany(()=>Book, (book: Book)=>book.author)
     books: Book[];
     
-    @OneToMany(()=>AuthorPicture, (authorPics: AuthorPicture)=>authorPics.author, {cascade: true})
+    @OneToMany(()=>AuthorPicture, (authorPics: AuthorPicture)=>authorPics.author, {cascade: ['remove']})
     authorPics: AuthorPicture[];
 
-    @OneToMany(()=>NomDePlume, (ndp: NomDePlume)=>ndp.author)
+    @OneToMany(()=>NomDePlume, (ndp: NomDePlume)=>ndp.author, {cascade: ['remove']})
     nomDePlumes: NomDePlume[];
 
     constructor(firstName : string, lastName:string, dateOfBirth:Date, dateOfDeath?:Date){
