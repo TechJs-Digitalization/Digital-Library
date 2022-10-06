@@ -16,7 +16,7 @@ AppDataSource.initialize().then(async () => {
 
     app.use(cors());
 
-    app.use('/public/', express.static(join(__dirname, '..','public')));
+    app.use('/public', express.static(join(__dirname, '..','public')));
 
     app.use(router);
 

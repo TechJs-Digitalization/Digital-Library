@@ -37,22 +37,13 @@ export default class BookController {
                     id: id
                 }
             })
-            if (result) {
-                result.coverPicture = '/public/bookPictures/' + result.coverPicture;
-    
-                return res.status(200).json({ err: false, data: result });
-            }
+            if (result) return res.status(200).json({ err: false, data: result });
         }
         res.status(404).json({ err: true, msg: 'Book not found' });
     }
 
 
     static async save(req: Request, res: Response, next: NextFunction) {
-        if (!req.files.cover) {
-            res.status(400).json({err: true, msg: 'Please upload a cover picture file'})
-            return next({});
-        }
-
         const [title, synopsis, available] = [req.fields.title[0]!, req.fields.synopsis[0]!, req.fields.available[0]!];
         const coverName = req.files.cover[0].newFilename;
 

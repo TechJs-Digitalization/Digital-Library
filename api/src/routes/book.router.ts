@@ -25,7 +25,7 @@ bookRouter
 
     .post('/', frommidableParse, bookVerification.verify, BookController.save)
 
-    .put('/:id', frommidableParse, BookController.update)
+    .put('/:id', frommidableParse, bookVerification.updateVerification, BookController.update)
 
 /* .put('/:id', [frommidableParse, bookVerification.verify], async (req: Request, res: Response) => {
     const form = formidable({

@@ -1,6 +1,6 @@
 import { File } from "formidable";
 import { rename, unlink } from "fs/promises";
-import { extname, join } from "path";
+import { extname, join, resolve } from "path";
 
 function rectifyFileName(fileName: string){
     fileName= fileName.replace(/ /g, '_').replace(/[àâã]/g, 'a')

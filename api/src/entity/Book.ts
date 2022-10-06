@@ -1,4 +1,4 @@
-import { Check, Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { AfterLoad, Check, Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { BookCategory } from "./BookCategory";
 import { Author } from "./Author";
 import { BookCheckout } from "./BookCheckout";
@@ -29,4 +29,9 @@ export class Book{
 
     @ManyToMany(()=>BookCheckout)
     bookChekouts: BookCheckout[];
+
+    @AfterLoad()
+    updateCoverPath(){
+        this.coverPicture= '/public/bookPictures/' + this.coverPicture;
+    }
 }
