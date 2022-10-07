@@ -26,6 +26,6 @@ export const AppDataSource = new DataSource({
     logging: false,
     entities: [User, Author, NumTel, Book, BookCategory, BookCheckout, Subscription, NomDePlume, SubscriptionType],
     migrationsTableName: "migrations",
-    migrations: ["src/migration/**/*.ts"],
+    migrations: ["dist/migration/**/*.js"],
     subscribers: [],
 })
