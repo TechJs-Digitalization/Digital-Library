@@ -13,8 +13,7 @@ export function formidableParse(options: Options) {
             for(let prop in files)
                 req.files[prop] = [files[prop]].flat();
             for( let prop in fields)
-                if(Array.isArray(fields[prop])) req.fields[prop]= fields[prop][0];
-                else req.fields[prop]= fields[prop].toString();
+                req.fields[prop]= [fields[prop]].flat()[0];
 
             next();
         })

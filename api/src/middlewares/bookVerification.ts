@@ -44,10 +44,12 @@ function synopsisIsIvalid(req: Request, res: Response, next: NextFunction){
 
 function availableIsInvalid(req: Request, res: Response, next: NextFunction){
     let invalid= false;
-    if(!req.fields.available){
+    if(!Number.isNaN(Number(req.fields.available))){
+        
         //if it's in th field, verify if it's an integer
         const availableNumber = Number(req.fields.available);
         if (!Number.isInteger(availableNumber) || availableNumber < 0){
+            
             res.status(400).json({err: true, msg: 'Invalid available number'});
             next({});
             invalid= true;
@@ -64,8 +66,7 @@ function availableIsInvalid(req: Request, res: Response, next: NextFunction){
 
 async function categoryIsInvalid(req: Request, res: Response, next: NextFunction){
     let invalid= false;
-    if(!req.fields.category || !Number.isInteger(Number(req.fields.category))){
-        
+    if(!Number.isNaN(Number(req.fields.category)) && Number.isInteger(Number(req.fields.category))){
         const categoryExist= await BookCategoryController.verifyCategoryExist(Number(req.fields.category));
         if(!categoryExist){
             res.status(404).json({err: true, msg: 'The precised category not found'})
@@ -74,7 +75,7 @@ async function categoryIsInvalid(req: Request, res: Response, next: NextFunction
         }
     }
     else{
-        res.status(404).json({err: true, msg: 'The precised category not found'})
+        res.status(404).json({err: true, msg: 'Category not found'})
         next({});
         invalid= true;
     }
@@ -84,8 +85,9 @@ async function categoryIsInvalid(req: Request, res: Response, next: NextFunction
 
 async function authorIsInvalid(req: Request, res: Response, next: NextFunction){
     let invalid= false;
-    if(!req.fields.author || !Number.isInteger(Number(req.fields.category))){
-        const authorExist= await AuthorController.verifyAuthorExist(Number(req.fields.author));
+    const author= Number(req.fields.author)
+    if(!Number.isNaN(author) && Number.isInteger(author)){
+        const authorExist= await AuthorController.verifyAuthorExist(author);
         if(!authorExist){
             res.status(404).json({err: true, msg: 'The precised author not found'});
             next({});
@@ -93,7 +95,7 @@ async function authorIsInvalid(req: Request, res: Response, next: NextFunction){
         }
     }
     else{
-        res.status(404).json({err: true, msg: 'The precised author not found'});
+        res.status(404).json({err: true, msg: 'Author not found'});
         next({});
         invalid= true;
     }
@@ -111,7 +113,7 @@ export async function verify(req: Request, res: Response, next: NextFunction) {
     //verify available number
     if(availableIsInvalid(req, res, next)) return;
 
-    if(req.fields.dispo){
+    if("dispo" in req.fields){
         if(req.fields.dispo.toLowerCase()!='true' && req.fields.dispo.toLowerCase()!='false'){
             res.status(400).json('The "dispo" field should have true or false as value')
             return next({})
@@ -132,7 +134,7 @@ export async function verify(req: Request, res: Response, next: NextFunction) {
         return next({})
     }
 
-    if(req.files.cover){
+    if("cover" in req.files){
         if(coverIsInvalid(req, res, next)) return; 
     }
     else{
@@ -163,44 +165,43 @@ export async function beforeUpdateOperation(req: Request, res: Response, next: N
     }
 
      //if title is in field object verify it
-     if(req.fields.title){
+     if("title" in req.fields){
         if(titleIsInvalid(req, res, next)) return;
     }
     
     //if synopsis is in field object verify it
-    if(req.fields.synopsis){
+    if("synopsis" in req.fields){
         if(synopsisIsIvalid(req, res, next)) return;
     }
 
-    if(req.fields.dispo && req.fields.dispo){
-        if(req.fields.dispo!='true' && req.fields.dispo!='false'){
+    if("dispo" in req.fields){
+        if(req.fields.dispo.toLowerCase()!='true' && req.fields.dispo.toLowerCase()!='false'){
             res.status(400).json('The "dispo" field should have true or false as value')
             return next({})
         }
     }
-    else req.fields.dispo='false';
     
     //if available is in field object verify it
-    if(req.fields.available){
+    if("available" in req.fields){
         if(availableIsInvalid(req, res, next)) return;
     }
 
     //verify if the category exist
-    if(req.fields.category){
+    if("category" in req.fields){
         if(await categoryIsInvalid(req, res, next)) return;
     }
 
     //verify if the author exist
-    if(req.fields.author){
+    if("author" in req.fields){
         if(await authorIsInvalid(req, res, next)) return;
     }
 
-    if(req.files.cover){
+    if('cover' in req.files){
         if(coverIsInvalid(req, res, next)) return; 
     }    
     
     //if there's update on title or author verify if a book with the same title written by the author already exist
-    if(req.fields.title || req.fields.author ){
+    if("title" in req.fields || "author" in req.fields ){
         let updateBook= {
             title: (req.fields.title) ? req.fields.title : bookInitial.title,
             author: {id: (req.fields.author) ? Number(req.fields.author) : bookInitial.author.id}

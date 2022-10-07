@@ -1,10 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { join } from "path";
-import { Repository } from "typeorm";
 import { AppDataSource } from "../data-source";
 import { Book } from "../entity/Book";
-import { BookCategory } from "../entity/BookCategory";
-import { getBasenames } from "../services/fileUpload";
 
 export default class BookController {
     static repository= AppDataSource.getRepository(Book);
@@ -41,14 +38,14 @@ export default class BookController {
 
 
     static async save(req: Request, res: Response, next: NextFunction) {
-        const [title, synopsis, available] = [req.fields.title[0]!, req.fields.synopsis[0]!, req.fields.available[0]!];
+        const [title, synopsis, available] = [req.fields.title!, req.fields.synopsis!, req.fields.available!];
         const coverName = req.files.cover[0].newFilename;
 
         try {
             await BookController.repository.save({
                 title: title,
                 available: Number(available),
-                dispo: req.fields.dispo[0]==='true',
+                dispo: req.fields.dispo==='true',
                 coverPicture: coverName,
                 synopsis: synopsis,
                 author: {id: Number(req.fields.author)},
@@ -70,21 +67,21 @@ export default class BookController {
             if(prop in tmp){
                 switch (prop) {
                     case "available":
-                        bookUpdate[prop]= Number(req.fields[prop][0]);
+                        bookUpdate[prop]= Number(req.fields[prop]);
                         break;
                         
                     case "dispo":
-                        bookUpdate[prop]= (req.fields.dispo[0]==='true');
+                        bookUpdate[prop]= (req.fields.dispo==='true');
                         break;
 
                     case "category":
                     case "author":
-                        bookUpdate[prop]= {id: Number(req.fields[prop][0]!)};
+                        bookUpdate[prop]= {id: Number(req.fields[prop]!)};
                         break;
                 
                     default:
                         if(prop != "bookCheckout" && prop != "coverPic")
-                            bookUpdate[prop]= req.fields[prop][0];
+                            bookUpdate[prop]= req.fields[prop];
                         break;
                 }
             }
