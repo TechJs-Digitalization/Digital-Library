@@ -1,24 +1,27 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Person } from "./Person";
+import { Person } from "./abstract/Person";
 import { Book } from "./Book";
+import { NomDePlume } from "./NomDePlume";
 
 @Entity()
 export class Author extends Person{
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn('increment')
     id: number;
-
-    @Column({length: 40})
-    nomDePlume: string;
 
     @Column({type: 'date', default: null, nullable: true})
     dateOfDeath: Date | null;
 
+    @Column('text')
+    description: string;
+
     @OneToMany(()=>Book, (book: Book)=>book.author)
     books: Book[];
 
-    constructor(firstName : string, lastName:string, nomDePlume: string, dateOfBirth:Date, dateOfDeath?:Date){
+    @OneToMany(()=>NomDePlume, (ndp: NomDePlume)=>ndp.author, {cascade: ['remove']})
+    nomDePlumes: NomDePlume[];
+
+    constructor(firstName : string, lastName:string, dateOfBirth:Date, dateOfDeath?:Date){
         super(firstName, lastName, dateOfBirth);
-        this.nomDePlume= nomDePlume;
         this.dateOfDeath= (dateOfDeath)? dateOfDeath : null;
     }
 }

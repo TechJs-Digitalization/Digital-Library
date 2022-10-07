@@ -1,26 +1,26 @@
-import express from 'express'
-import * as bodyParser from "body-parser"
-import cors from 'cors'
-import Indexroutes from "./routes/IndexRoutes"
-import { AppDataSource } from "./data-source"
+import express from 'express';
+import cors from 'cors';
+import { AppDataSource } from "./data-source";
+import router from './routes/router';
+import { join } from 'path';
 
-const port = process.env.PORT || 5000;
+AppDataSource.initialize().then(async () => {
+    const app = express();
+    const port= process.env.PORT || 5000;
 
-AppDataSource
-    .initialize()
-    .then(async () => {
+    app.use(express.json());
 
-        // create express app
-        const app = express();
-        app.use(express.json());
-        app.use(express.urlencoded({ extended: true }));
-        app.use(bodyParser.json());
-        app.use(cors());
-        app.use('/', Indexroutes);
+    app.use(express.urlencoded({extended: true}));
 
+    app.use(cors());
 
-        // start express server
-        app.listen(port, () => console.log(`Express server has started on port ${port}`))
+    app.use(cors());
+
+    app.use('/public', express.static(join(__dirname, '..','public')));
+
+    app.use(router);
+
+    app.listen(port, ()=>{
+        console.log(`sever launched on port ${port}`);
     })
-    .catch(error => console.log(error))
-
+}).catch(error => console.log(error))

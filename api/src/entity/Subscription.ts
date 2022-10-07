@@ -1,27 +1,20 @@
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import {User} from './User';
-
-export enum SUBSCRIPTION_TYPE{ test1, test2 }
-
+import { SubscriptionType } from "./SubscriptionType";
+import { User } from './User';
 @Entity()
-export class Subscription{
-    @PrimaryGeneratedColumn()
-    id: number;
+export class Subscription {
+    @PrimaryGeneratedColumn('uuid')
+    id: string;
 
-    @Column({
-        type: "enum",
-        enum: SUBSCRIPTION_TYPE,
-        default: SUBSCRIPTION_TYPE.test1
-    })
-    type: SUBSCRIPTION_TYPE;
+    @Column({ length: 25, nullable: true })
+    pictureName: string;
 
     @CreateDateColumn()
     subscriptionDate: Date;
 
-    @ManyToOne(()=>User, (user: User)=>user.subscriptions)
+    @ManyToOne(() => User, (user: User) => user.subscriptions)
     user: User;
 
-    constructor(type: SUBSCRIPTION_TYPE){
-        this.type= type;
-    }
+    @ManyToOne(()=>SubscriptionType, (type: SubscriptionType)=>type.subscriptions)
+    type: SubscriptionType;
 }

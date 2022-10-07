@@ -7,20 +7,21 @@ import {
     CreateDateColumn,
     UpdateDateColumn
 } from "typeorm";
-import { Person } from "./Person";
+import { Person } from "./abstract/Person";
 import { IsNotEmpty, Length } from 'class-validator';
 import * as bcrypt from "bcrypt";
 import { Subscription } from './Subscription';
 import { NumTel } from './NumTel';
+import { BookCheckout } from "./BookCheckout";
 
-@Entity()
-@Unique(["email"])
+@Entity({ name: 'users' })
+@Unique(["mail"])
 export class User extends Person {
     @PrimaryGeneratedColumn()
     id: number;
 
     @Column()
-    email: string;
+    mail: string;
 
     @Column()
     @Length(6, 100)
@@ -38,13 +39,16 @@ export class User extends Person {
     @UpdateDateColumn()
     updatedAt: Date;
 
-    @OneToMany(() => Subscription, (subscription: Subscription) => subscription.user, { cascade: true })
-    subscriptions!: Subscription[];
+    @OneToMany(() => Subscription, (subscription: Subscription) => subscription.user, { cascade: ['remove'] })
+    subscriptions: Subscription[];
 
-    @OneToMany(() => NumTel, (num: NumTel) => num.user, { cascade: true })
+    @OneToMany(() => NumTel, (num: NumTel) => num.user, { cascade: ['remove'] })
     numTel!: NumTel[];
 
-    hashPassword() {
+    @OneToMany(() => BookCheckout, (checkout: BookCheckout) => checkout.user, {cascade: ['remove']})
+    checkouts: BookCheckout[];
+    
+    hashPassword(){
         this.password = bcrypt.hashSync(this.password, 8);
     }
 
@@ -53,10 +57,12 @@ export class User extends Person {
     }
 
 
-    constructor(firstName: string, lastName: string, BirthDate: Date, email: string, role: string) {
+    constructor(firstName: string, lastName: string, BirthDate: Date, email: string, role: string, pswd?: string) {
         super(firstName, lastName, BirthDate);
-        this.email = email;
+        this.mail = email;
         this.role = role;
+        if(pswd)
+            this.password= pswd;
     }
 }
 //subscription tkn entité hafa

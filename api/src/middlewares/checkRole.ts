@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from "express";
-import { getRepository } from "typeorm";
 import { AppDataSource } from "../data-source";
 import { User } from "../entity/User";
 
@@ -13,7 +12,7 @@ export const checkRole = (roles: Array<string>) => {
         let user!: User;
         try {
             user = await userRepository.findOneOrFail({ where: { id: id } });
-        } catch (id) {
+        } catch (err) {
             res.status(401).send();
         }
 
