@@ -4,6 +4,7 @@ import { AppDataSource } from "./data-source";
 import router from './routes/router';
 import { join } from 'path';
 import * as  dotenv from 'dotenv'
+import cookieParser from 'cookie-parser';
 dotenv.config();
 
 AppDataSource.initialize().then(async () => {
@@ -16,7 +17,7 @@ AppDataSource.initialize().then(async () => {
 
     app.use(cors());
 
-    app.use(cors());
+    app.use(cookieParser());
 
     app.use('/public', express.static(join(__dirname, '..','public')));
 
