@@ -20,4 +20,8 @@ PORT= Replace_the_port_address_where_the_server_gonna_be_launched
 - email:"admin@gmail.com"
 - password:"admin"
 
+ ****ADMIN****
+- email:"admin@gmail.com"
+- password:"admin"
+
 ## Front-end

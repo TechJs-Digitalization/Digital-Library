@@ -3,6 +3,8 @@ import cors from 'cors';
 import { AppDataSource } from "./data-source";
 import router from './routes/router';
 import { join } from 'path';
+import * as  dotenv from 'dotenv'
+dotenv.config();
 
 AppDataSource.initialize().then(async () => {
     const app = express();
