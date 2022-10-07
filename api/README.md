@@ -8,6 +8,10 @@ Steps to run this project:
 
 
 4. ****ADMIN****
-    email:"admin@gmail.com",
+    mail:"admin@gmail.com",
     password:"admin"
 5. when testing the authroutes, take the token on the body(json) and set it to the header in "authorization"
+
+modification password: 
+    in header: `authorization: tokkenValue`, normally after loging in it is already set
+    in body: `oldPassword: value`, `newPassword:value`, `newPasswordVerif:value`
