@@ -20,12 +20,12 @@ class AuthController {
         try {
             user = await userRepository.findOneOrFail({ where: { mail: mail } });
         } catch (error) {
-            res.status(401).send();
+            res.status(404).json({err: true, msg:'User not found'});
         }
 
         //check if encrypted password match
         if (!user.checkIfUnencryptedPasswordIsValid(password)) {
-            res.status(401).send();
+            res.status(401).json({err: true, msg: 'Wrong password'});
             return;
         }
 

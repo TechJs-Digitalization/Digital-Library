@@ -5,7 +5,6 @@ import {
     PrimaryGeneratedColumn,
     Unique,
     CreateDateColumn,
-    UpdateDateColumn
 } from "typeorm";
 import { Person } from "./abstract/Person";
 import { IsNotEmpty, Length } from 'class-validator';
@@ -26,18 +25,13 @@ export class User extends Person {
     @Column()
     @Length(6, 100)
     password: string;
-
-    @Column()
-    @IsNotEmpty()
-    role: string;
+    
+    @Column('boolean')
+    isAdmin!: boolean;
 
     @Column()
     @CreateDateColumn()
     createdAt: Date;
-
-    @Column()
-    @UpdateDateColumn()
-    updatedAt: Date;
 
     @OneToMany(() => Subscription, (subscription: Subscription) => subscription.user, { cascade: ['remove'] })
     subscriptions: Subscription[];
@@ -57,10 +51,10 @@ export class User extends Person {
     }
 
 
-    constructor(firstName: string, lastName: string, BirthDate: Date, email: string, role: string, pswd?: string) {
+    constructor(firstName: string, lastName: string, BirthDate: Date, email: string, isAdmin?: boolean, pswd?: string) {
         super(firstName, lastName, BirthDate);
         this.mail = email;
-        this.role = role;
+        this.isAdmin = (isAdmin) ? isAdmin : false;
         if(pswd)
             this.password= pswd;
     }

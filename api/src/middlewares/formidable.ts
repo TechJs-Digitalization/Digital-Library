@@ -13,7 +13,8 @@ export function formidableParse(options: Options) {
             for(let prop in files)
                 req.files[prop] = [files[prop]].flat();
             for( let prop in fields)
-                req.fields[prop]= [fields[prop]].flat();
+                if(Array.isArray(fields[prop])) req.fields[prop]= fields[prop][0];
+                else req.fields[prop]= fields[prop].toString();
 
             next();
         })
@@ -29,6 +30,6 @@ export async function deleteFileOnError(err: Error, req: Request, res: Response,
         await deleteFile(...filepathList);
     } catch (error) {
         if(error instanceof Error)
-            res.status(500).json({err: true, msg: 'Something bad happened while trying to delete files'});
+            console.log('Something bad happened while trying to delete files');
     }
 }

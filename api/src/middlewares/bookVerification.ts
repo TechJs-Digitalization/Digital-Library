@@ -8,13 +8,9 @@ import { AppDataSource } from "../data-source";
 import { Book } from "../entity/Book";
 import { deleteFile } from "../services/fileUpload";
 
-function verifyFieldIsNull(reqField: string[] | File[]) : boolean{
-    return !reqField[0];
-}
-
 function coverIsInvalid(req: Request, res: Response, next: NextFunction){
     let invalid= false;
-    if(verifyFieldIsNull(req.files.cover)){
+    if(!req.files.cover[0]){
         res.status(400).json({err: true, msg: 'Please provide one file to this "cover" field'});
         next({});
         invalid= true;
@@ -28,7 +24,7 @@ function coverIsInvalid(req: Request, res: Response, next: NextFunction){
 
 function titleIsInvalid(req: Request, res: Response, next: NextFunction){
     let invalid= false;
-    if(verifyFieldIsNull(req.fields.title)){
+    if(!req.fields.title.trim() || !req.fields.title.trim()){
         res.status(400).json({err: true, msg: 'Please provide a value to this "title" field'});
         next({});
         invalid= true;
@@ -38,7 +34,7 @@ function titleIsInvalid(req: Request, res: Response, next: NextFunction){
 
 function synopsisIsIvalid(req: Request, res: Response, next: NextFunction){
     let invalid= false;
-    if(verifyFieldIsNull(req.fields.synopsis)){
+    if(!req.fields.synopsis.trim() || !req.fields.synopsis.trim()){
         res.status(400).json({err: true, msg: 'Please provide a value to this "synopsis" field'});
         next({});
         invalid= true;
@@ -48,9 +44,9 @@ function synopsisIsIvalid(req: Request, res: Response, next: NextFunction){
 
 function availableIsInvalid(req: Request, res: Response, next: NextFunction){
     let invalid= false;
-    if(!verifyFieldIsNull(req.fields.available)){
+    if(!req.fields.available){
         //if it's in th field, verify if it's an integer
-        const availableNumber = Number(req.fields.available[0]);
+        const availableNumber = Number(req.fields.available);
         if (!Number.isInteger(availableNumber) || availableNumber < 0){
             res.status(400).json({err: true, msg: 'Invalid available number'});
             next({});
@@ -68,9 +64,9 @@ function availableIsInvalid(req: Request, res: Response, next: NextFunction){
 
 async function categoryIsInvalid(req: Request, res: Response, next: NextFunction){
     let invalid= false;
-    if(!verifyFieldIsNull(req.fields.category) && Number.isInteger(Number(req.fields.category[0]))){
+    if(!req.fields.category || !Number.isInteger(Number(req.fields.category))){
         
-        const categoryExist= await BookCategoryController.verifyCategoryExist(Number(req.fields.category[0]));
+        const categoryExist= await BookCategoryController.verifyCategoryExist(Number(req.fields.category));
         if(!categoryExist){
             res.status(404).json({err: true, msg: 'The precised category not found'})
             next({})
@@ -88,8 +84,8 @@ async function categoryIsInvalid(req: Request, res: Response, next: NextFunction
 
 async function authorIsInvalid(req: Request, res: Response, next: NextFunction){
     let invalid= false;
-    if(!verifyFieldIsNull(req.fields.author) && Number.isInteger(Number(req.fields.category[0]))){
-        const authorExist= await AuthorController.verifyAuthorExist(Number(req.fields.author[0]));
+    if(!req.fields.author || !Number.isInteger(Number(req.fields.category))){
+        const authorExist= await AuthorController.verifyAuthorExist(Number(req.fields.author));
         if(!authorExist){
             res.status(404).json({err: true, msg: 'The precised author not found'});
             next({});
@@ -106,63 +102,33 @@ async function authorIsInvalid(req: Request, res: Response, next: NextFunction){
 }
 
 export async function verify(req: Request, res: Response, next: NextFunction) {
-    //verify if title is in field object
-    if(req.fields.title){
-        if(titleIsInvalid(req, res, next)) return;
-    }
-    else{
-        res.status(400).json({err: true, msg: 'Please provide a "title" field'});
-        return next({});
-    }
+    //verify title
+    if(titleIsInvalid(req, res, next)) return;
     
-    //verify if synopsis isn't in field object or is null
-    if(req.fields.synopsis){
-        if(synopsisIsIvalid(req, res, next)) return;
-    }
-    else{
-        res.status(400).json({err: true, msg: 'Please provide a "synopsis" field with his value'})
-        return next({})
-    }
+    //verify synopsis
+    if(synopsisIsIvalid(req, res, next)) return;
     
-    //verify if available isn't in field object or is null
-    if(req.fields.available){
-        if(availableIsInvalid(req, res, next)) return;
-    }
-    else{
-        res.status(400).json({err: true, msg: 'Please provide a "available" field with his positive integer value'})
-        return next({})
-    }
+    //verify available number
+    if(availableIsInvalid(req, res, next)) return;
 
-    if(req.fields.dispo && req.fields.dispo[0]){
-        if(req.fields.dipso[0].toLowerCase()!='true' && req.fields.dipso[0].toLowerCase()!='false'){
+    if(req.fields.dispo){
+        if(req.fields.dispo.toLowerCase()!='true' && req.fields.dispo.toLowerCase()!='false'){
             res.status(400).json('The "dispo" field should have true or false as value')
             return next({})
         }
     }
-    else req.fields.dispo=[];
+    else req.fields.dispo='false';
 
-    //verify if the category exist
-    if(req.fields.category){
-        if(await categoryIsInvalid(req, res, next)) return;
-    }
-    else {
-        res.status(400).json({err: true, msg: 'Please provide a "category" field with a positive integer value'});
-        return next({})
-    }
+    //verify category
+    if(await categoryIsInvalid(req, res, next)) return;
 
-    //verify if the author exist
-    if(req.fields.author){
-        if(await authorIsInvalid(req, res, next)) return;
-    }
-    else{
-        res.status(400).json({err: true, msg: 'Please provide a "author" field with a positive integer value'})
-        return next({})
-    }
+    //verify author
+    if(await authorIsInvalid(req, res, next)) return;
 
     //verify if the title of the book is already taken by another saved book of the current author
-    const bookAlreadyExist = await BookController.verifyIfExistByAuthor(req.fields.title[0], Number(req.fields.author[0]));
+    const bookAlreadyExist = await BookController.verifyIfExistByAuthor(req.fields.title, Number(req.fields.author));
     if (bookAlreadyExist){
-        res.status(400).json({err: true, msg: 'A book with the provided title, written by the provided author already exists'})
+        res.status(400).json({err: true, msg: 'A book with the provided title, written by the provided author already exist'})
         return next({})
     }
 
@@ -196,25 +162,25 @@ export async function beforeUpdateOperation(req: Request, res: Response, next: N
         return next({})
     }
 
-     //verify if title is in field object
+     //if title is in field object verify it
      if(req.fields.title){
         if(titleIsInvalid(req, res, next)) return;
     }
     
-    //verify if synopsis isn't in field object or is null
+    //if synopsis is in field object verify it
     if(req.fields.synopsis){
         if(synopsisIsIvalid(req, res, next)) return;
     }
 
-    if(req.fields.dispo && req.fields.dispo[0]){
-        if(req.fields.dipso[0]!='true' && req.fields.dipso[0]!='false'){
+    if(req.fields.dispo && req.fields.dispo){
+        if(req.fields.dispo!='true' && req.fields.dispo!='false'){
             res.status(400).json('The "dispo" field should have true or false as value')
             return next({})
         }
     }
-    else req.fields.dispo=[];
+    else req.fields.dispo='false';
     
-    //verify if available isn't in field object or is null
+    //if available is in field object verify it
     if(req.fields.available){
         if(availableIsInvalid(req, res, next)) return;
     }
@@ -236,8 +202,8 @@ export async function beforeUpdateOperation(req: Request, res: Response, next: N
     //if there's update on title or author verify if a book with the same title written by the author already exist
     if(req.fields.title || req.fields.author ){
         let updateBook= {
-            title: (req.fields.title) ? req.fields.title[0] : bookInitial.title,
-            author: {id: (req.fields.author) ? Number(req.fields.author[0]) : bookInitial.author.id}
+            title: (req.fields.title) ? req.fields.title : bookInitial.title,
+            author: {id: (req.fields.author) ? Number(req.fields.author) : bookInitial.author.id}
         };
     
         //verify if the title of the book is already taken by another saved book of the current author

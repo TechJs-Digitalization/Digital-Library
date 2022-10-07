@@ -5,3 +5,4 @@ dist/
 tmp/
 temp/
 .env
+public/bookPictures/*
