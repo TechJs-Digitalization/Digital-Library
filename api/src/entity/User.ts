@@ -7,7 +7,7 @@ import {
     CreateDateColumn,
 } from "typeorm";
 import { Person } from "./abstract/Person";
-import { IsNotEmpty, Length } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, Length } from 'class-validator';
 import * as bcrypt from "bcrypt";
 import { Subscription } from './Subscription';
 import { NumTel } from './NumTel';
@@ -20,13 +20,15 @@ export class User extends Person {
     id: number;
 
     @Column()
+    @IsEmail(undefined, {message: 'the provided mail isn\'t a valid mail'})
     mail: string;
 
     @Column()
+    @IsString()
     @Length(6, 100)
     password: string;
     
-    @Column('boolean')
+    @Column({type: 'boolean', default: false})
     isAdmin!: boolean;
 
     @Column()

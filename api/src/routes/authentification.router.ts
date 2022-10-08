@@ -1,15 +1,19 @@
 import { Router } from "express";
 import AuthController from "../controllers/AuthController";
-import { checkJwt } from "../middlewares/checkJwt";
+import UserController from "../controllers/UserController";
+import { checkJwt, checkLogedOut } from "../middlewares/checkJwt";
 
 const router = Router();
 
+router.post('/signin', [checkLogedOut], UserController.newUser(false))
+
 //Login route
-router.post("/login", AuthController.login);
+.post("/login", [checkLogedOut], AuthController.login)
 
 //change my password
-router.post("/change-password", [checkJwt], AuthController.changePassword);
+.post("/change-password", [checkJwt], AuthController.changePassword)
 
-router.post("/logout", [checkJwt], AuthController.logout);
+//logout
+.post("/logout", [checkJwt], AuthController.logout)
 
 export default router;
