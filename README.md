@@ -60,4 +60,8 @@ The "cover" inpu value should be an image file, otherwise you'd get an error mes
 | available | Number of the book in stock | integer | available>=0 |
 | dispo | If true, the book is disponible for all user, can be used to hidde a book from them | boolean, default value= false |  |
 | cover | The cover picture of the book | File | Must be one image file |
+  
+**NB**: When getting a book, the link to the file is like "/public/bookPictures/nom.extension". So you should add the value of `SERVER` to it.  
+example: localhost:8080/public/bookPictures/nom.extension
+
 ## Front-end
