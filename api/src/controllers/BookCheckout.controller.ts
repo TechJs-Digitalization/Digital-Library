@@ -9,7 +9,7 @@ import SubscriptionController from "./Subscription.controller";
 import { StaticFile } from "./staticFile"
 export default class BookCheckoutController {
 
-    static subscription : Subscription ;
+    static subscription : Subscriptions ;
    static  subsciptiontype : SubscriptionType ;
     static subscriptionController = new SubscriptionController(
        BookCheckoutController.subscription , 
