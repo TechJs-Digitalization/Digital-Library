@@ -1,0 +1,39 @@
+.books-container {
+    margin: 20px;
+}
+.cards {
+    display: flex;
+}
+
+.card {
+    --blue: rgb(14, 54, 255);
+    --shadow: 5px 5px 10px rgba(0,0,0,0.4);
+    --radius: 10px;
+
+    background-color: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    height: 300px;
+    width: 200px;
+    margin: 30px;
+}
+
+.image {
+    width: 200px;
+    height: 60%;
+    background: gray;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.description {
+    margin-top: -16px;
+    height: 40%;
+    width: 200px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.description h3{
+    font-size: 16px;
+}

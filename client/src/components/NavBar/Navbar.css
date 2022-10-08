@@ -1,0 +1,22 @@
+.Navbar {
+    display: flex;
+    font-size: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.right_nav .list{
+    display: flex;
+}
+
+.link .button {
+    color: white;
+    margin: -40px;
+    text-decoration: none;
+    font-size: 18px;
+    border: none;
+    background-color: transparent;
+}
+

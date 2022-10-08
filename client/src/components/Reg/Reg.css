@@ -1,0 +1,65 @@
+.Reg {
+    place-items: center;
+    margin: 0;
+    display: grid;
+    height: 80vh;
+}
+
+.title {
+    color: var(--blue);
+}
+
+.wrap {
+
+    --blue: rgb(14, 54, 255);
+    --shadow: 5px 5px 10px rgba(0,0,0,0.4);
+    --radius: 10px;
+
+    padding: 1rem 2rem;
+    background-color: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+
+.field-area {
+    border: none;
+    margin-bottom: 1.5rem;
+    margin-left: 0;
+}
+
+label {
+    color: var(--blue);
+    font-weight: bold;
+    display: inline-block;
+    width: 4rem;
+}
+
+input {
+    margin-left: 1rem;
+    border: 0;
+    outline: 0;
+    border-bottom: dotted 2px var(--blue);
+}
+
+input:focus {
+    border-bottom-style: solid;
+}
+
+button {
+    appearance: none;
+    border: none;
+    color: white;
+    background-color: var(--blue);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    width: 100%;
+    padding: 0.5rem 1rem;
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+#date {
+    color: var(--blue);
+    border-bottom: none;
+}
