@@ -6,6 +6,8 @@ import { BookCheckout } from "../entity/BookCheckout";
 import {  Repository} from "typeorm/repository/Repository";
 import { AppDataSource } from "../data-source";
 import SubscriptionController from "./Subscription.controller";
+import { User } from "../entity/User"
+import { Book } from "../entity/Book"
 import { StaticFile } from "./staticFile"
 export default class BookCheckoutController {
 
@@ -18,19 +20,22 @@ export default class BookCheckoutController {
     
      actualDate : Date = new Date();
     static subscriptionType: SubscriptionType;
-        static #repository : Repository<BookCheckout>
+        static #repository : Repository<Book>
         static {
-            BookCheckoutController.#repository = AppDataSource.getRepository(BookCheckout);
+            BookCheckoutController.#repository = AppDataSource.getRepository(Book);
         }
         
     constructor(
         subscriptionID : number,
-        listOfBooksById : number[] ){
+        listOfBooksById : number[],
+        user:User ){
             
             this.subscriptionID = subscriptionID;
             this.listOfBooksById = listOfBooksById;
+            this.user = user;
            
     }
+    user : User;
     
     listOfBooksById : number[];
   
@@ -38,36 +43,33 @@ export default class BookCheckoutController {
     subscriptionID : number ;
     numberOfBookThisMonth : number ;
     
-    private  async SetTheOrderOfBook  ( list: number[] )   {
+protected  async SetTheOrderOfBook  ( list: number[] )   {
         for ( var i = 0; i < list.length; i ++) {
             if( Number.isInteger(list[i]) ){
                    let result = await BookCheckoutController.#repository.findOne({
                     where: {
-                        
-                        id: list[i]
+                        idBook: list[i]
                     }
-                    
-                     
-                })
-                if (result){
-                    this.listOfBooksById[i] = list[i]
-                }else  {
-                    return false;
-                }
+                });
+            if (result){
+                this.listOfBooksById[i] = list[i]
+            }else  {
+                return false;
+            }
                 
-            }else {return false }
+        }else {return false }
              return this.listOfBooksById;
-        }
-    }
+     }
+}
 
 
-  private checkoutIfSubmitIsFinished =  (dateToCompare: Date , subscription : number  ) : boolean =>{
+protected checkoutIfSubmitIsFinished =  (dateToCompare: Date , subscription : number  ) : boolean =>{
     // verifier si la subscription ayant cette id existe dans la table
 
     return (this.dateVerification > dateToCompare  ) ? true : false;
 }
 
-    private validateTheOrderByBookRead = (numberOfBook : number , 
+protected validateTheOrderByBookRead = (numberOfBook : number , 
         subscription : number)  => {
             let result = this.SetTheOrderOfBook(this.listOfBooksById);
             if (result  instanceof Array){
@@ -76,39 +78,12 @@ export default class BookCheckoutController {
                 return false
             }
        }
+protected checkIfABookIsWithUser = (user: User):boolean =>{
+    
+    return true;
+}
 
-   
-   
-   
-   
-validateTheOrderOfBook = async ( req : Request, res : Response, next : NextFunction )  => {
-    const permissionByCheckBookRead = this.validateTheOrderByBookRead (
-        this.numberOfBookThisMonth , 
-        this.subscriptionID );
-    const permissionByCheckSubmit = this.checkoutIfSubmitIsFinished (this.actualDate , this.subscriptionID ) ;
-    //actualDate =daty androany 
-        try {
-            
-            if (permissionByCheckSubmit && permissionByCheckBookRead ) {
-                res.status(200).send(" The order has been received");
-                return this.listOfBooksById; 
-                
-            } else if (!permissionByCheckSubmit) {
-                res.status(401).send(" the submit has been already finished  ");
-                return false;
-            }else   {
-                res.status(401).send(" the maximum of number of book submissions is exceeded")
-                return false;
-            }
 
-        
-        }catch (err ) {
-            res.status(401).send(" we cannot to take the order");
-            return false
-        }
-
-            
-    }
 }
 
 
