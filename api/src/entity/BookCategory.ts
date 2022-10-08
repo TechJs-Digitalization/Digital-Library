@@ -3,15 +3,12 @@ import { Book } from './Book';
 
 @Entity()
 export class BookCategory{
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn('increment')
     id: number;
 
-    @Column({type: 'varchar'})
+    @Column({type: 'varchar', unique: true})
     name!: string;
 
-    @Column({type: 'text'})
-    synopsis!: string;
-
-    @OneToMany(()=>Book, (book: Book)=>book.category)
+    @OneToMany(()=>Book, (book: Book)=>book.category, {cascade:['remove']})
     books: Book[];
 }

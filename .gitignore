@@ -1,1 +1,5 @@
 .vscode
+TODO.md
+SendFileWithAxios.md
+api/public/*
+api/.env

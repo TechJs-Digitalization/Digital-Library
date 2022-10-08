@@ -3,8 +3,8 @@ import {User} from './User'
 
 @Entity()
 export class NumTel{
-    @PrimaryGeneratedColumn()
-    id: number;
+    @PrimaryGeneratedColumn('uuid')
+    id: string;
 
     @Column({
         type: 'varchar',
@@ -14,8 +14,4 @@ export class NumTel{
 
     @ManyToOne(()=>User, (user: User)=>user.numTel)
     user: User;
-
-    constructor(num: string){
-        this.num= num;
-    }
 }

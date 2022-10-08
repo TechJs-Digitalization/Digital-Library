@@ -1,28 +1,62 @@
-import { Entity, Column, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Person } from "./Person";
-import { Subscription, SUBSCRIPTION_TYPE } from './Subscription';
+import {
+    Entity,
+    Column,
+    OneToMany,
+    PrimaryGeneratedColumn,
+    Unique,
+    CreateDateColumn,
+} from "typeorm";
+import { Person } from "./abstract/Person";
+import { IsNotEmpty, Length } from 'class-validator';
+import * as bcrypt from "bcrypt";
+import { Subscription } from './Subscription';
 import { NumTel } from './NumTel';
+import { BookCheckout } from "./BookCheckout";
 
-@Entity({name: 'users'})
+@Entity({ name: 'users' })
+@Unique(["mail"])
 export class User extends Person {
-    @PrimaryGeneratedColumn("uuid")
-    id: string;
+    @PrimaryGeneratedColumn()
+    id: number;
 
-    @Column({
-        type: "varchar"
-    })
-    mail!: string;
+    @Column()
+    mail: string;
 
-    @OneToMany(() => Subscription, (subscription: Subscription) => subscription.user, { cascade: true })
-    subscriptions!: Subscription[];
+    @Column()
+    @Length(6, 100)
+    password: string;
+    
+    @Column('boolean')
+    isAdmin!: boolean;
 
-    @OneToMany(() => NumTel, (num: NumTel) => num.user, { cascade: true })
+    @Column()
+    @CreateDateColumn()
+    createdAt: Date;
+
+    @OneToMany(() => Subscription, (subscription: Subscription) => subscription.user, { cascade: ['remove'] })
+    subscriptions: Subscription[];
+
+    @OneToMany(() => NumTel, (num: NumTel) => num.user, { cascade: ['remove'] })
     numTel!: NumTel[];
 
+    @OneToMany(() => BookCheckout, (checkout: BookCheckout) => checkout.user, {cascade: ['remove']})
+    checkouts: BookCheckout[];
+    
+    hashPassword(){
+        this.password = bcrypt.hashSync(this.password, 8);
+    }
 
-    constructor(firstName: string, lastName: string, dateOfBirth: Date, mail: string) {
-        super(firstName, lastName, dateOfBirth);
-        this.mail = mail;
+    checkIfUnencryptedPasswordIsValid(unencryptedPassword: string) {
+        return bcrypt.compareSync(unencryptedPassword, this.password);
+    }
+
+
+    constructor(firstName: string, lastName: string, BirthDate: Date, email: string, isAdmin?: boolean, pswd?: string) {
+        super(firstName, lastName, BirthDate);
+        this.mail = email;
+        this.isAdmin = (isAdmin) ? isAdmin : false;
+        if(pswd)
+            this.password= pswd;
     }
 }
 //subscription tkn entité hafa

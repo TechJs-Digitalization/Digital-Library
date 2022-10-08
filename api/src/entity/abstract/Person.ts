@@ -18,11 +18,11 @@ export abstract class Person {
     @Column({
         type: "date"
     })
-    BirthDate: Date;
+    dateOfBirth: Date;
 
     constructor(firstName: string, lastName: string, BirthDate: Date) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.BirthDate = BirthDate;
+        this.dateOfBirth = BirthDate;
     }
 }

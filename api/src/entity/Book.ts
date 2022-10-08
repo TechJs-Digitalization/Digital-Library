@@ -1,27 +1,40 @@
-import { Check, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { AfterLoad, Check, Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { BookCategory } from "./BookCategory";
 import { Author } from "./Author";
+import { BookCheckout } from "./BookCheckout";
 
 @Entity()
 @Check(`"available">=0`)
 export class Book{
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn('increment')
     id: number;
 
-    @Column({type: 'varchar'})
+    @Column('varchar')
     title!: string;
+
+    @Column('boolean')
+    dispo!: boolean;
 
     @Column()
     available!: number;
+
+    @Column({type: 'text'})
+    synopsis!: string;
+
+    @Column('varchar')
+    coverPicture!: string;
 
     @ManyToOne(()=>BookCategory, (category: BookCategory)=>category.books)
     category!: BookCategory;
 
     @ManyToOne(()=>Author, (author: Author)=>author.books)
-    author: Author;
+    author!: Author;
 
-    constructor(title: string, available:number=0){
-        this.title= title;
-        this.available= available;
+    @ManyToMany(()=>BookCheckout, {cascade: ["remove"]})
+    bookChekouts: BookCheckout[];
+
+    @AfterLoad()
+    rectifyCoverPath(){
+        this.coverPicture= '/public/bookPictures/' + this.coverPicture;
     }
 }
