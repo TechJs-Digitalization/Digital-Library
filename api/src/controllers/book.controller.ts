@@ -43,11 +43,11 @@ export default class BookController {
 
         try {
             await BookController.repository.save({
-                title: title,
+                title: title.trim(),
                 available: Number(available),
                 dispo: req.fields.dispo==='true',
                 coverPicture: coverName,
-                synopsis: synopsis,
+                synopsis: synopsis.trim(),
                 author: {id: Number(req.fields.author)},
                 category: {id: Number(req.fields.category)}
             })
@@ -81,7 +81,7 @@ export default class BookController {
                 
                     default:
                         if(prop != "bookCheckout" && prop != "coverPic")
-                            bookUpdate[prop]= req.fields[prop];
+                            bookUpdate[prop]= req.fields[prop].trim();
                         break;
                 }
             }

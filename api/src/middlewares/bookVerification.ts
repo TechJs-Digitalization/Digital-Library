@@ -24,7 +24,7 @@ function coverIsInvalid(req: Request, res: Response, next: NextFunction){
 
 function titleIsInvalid(req: Request, res: Response, next: NextFunction){
     let invalid= false;
-    if(!req.fields.title.trim() || !req.fields.title.trim()){
+    if(!req.fields.title || !req.fields.title.trim()){
         res.status(400).json({err: true, msg: 'Please provide a value to this "title" field'});
         next({});
         invalid= true;
@@ -34,7 +34,7 @@ function titleIsInvalid(req: Request, res: Response, next: NextFunction){
 
 function synopsisIsIvalid(req: Request, res: Response, next: NextFunction){
     let invalid= false;
-    if(!req.fields.synopsis.trim() || !req.fields.synopsis.trim()){
+    if(!req.fields.synopsis || !req.fields.synopsis.trim()){
         res.status(400).json({err: true, msg: 'Please provide a value to this "synopsis" field'});
         next({});
         invalid= true;
