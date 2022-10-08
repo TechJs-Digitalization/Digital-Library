@@ -1,5 +1,4 @@
-import { getRepository } from "typeorm";
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 import { AppDataSource } from "../data-source";
 import { User } from "../entity/User";
 import { validate } from "class-validator";
@@ -10,7 +9,7 @@ export class UserController {
         //get user from database
         const userRepository = AppDataSource.getRepository(User);
         const users = await userRepository.find(
-            { select: ["id", "firstName", "lastName", "dateOfBirth", "mail", "role"] }
+            { select: ["id", "firstName", "lastName", "dateOfBirth", "mail", "isAdmin"] }
         );
 
         //send the users object
@@ -25,7 +24,7 @@ export class UserController {
         const userRepository = AppDataSource.getRepository(User);
         try {
             let user = await userRepository.findOneOrFail({
-                select: ["id", "firstName", "lastName", "dateOfBirth", "mail", "role"],
+                select: ["id", "firstName", "lastName", "dateOfBirth", "mail", "isAdmin"],
                 where: { id: id }
             });
 

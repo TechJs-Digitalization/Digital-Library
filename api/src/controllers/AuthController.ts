@@ -50,8 +50,7 @@ class AuthController {
     static changePassword = async (req: Request, res: Response) => {
         //Get ID from JWT
         const id = parseInt(res.locals.jwtPayload.userId);
-        console.log(res.locals.jwtPayload);
-        
+
         //get parameters from body
         const { oldPassword, newPassword, newPasswordVerif } = req.body;
         if (!(oldPassword && newPassword && newPasswordVerif)) 
@@ -80,7 +79,7 @@ class AuthController {
         user.password = newPassword;
         const errors = await validate(user);
         if (errors.length > 0) {
-            return res.status(401).json({err: true, msg: errors});
+            return res.status(401).json({err: true, msg: 'Password must be longer than or equal to 6 characters'});
         }
 
         //hash the new password and save

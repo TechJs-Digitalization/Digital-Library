@@ -28,16 +28,11 @@ export class User extends Person {
     password: string;
 
     @Column()
-    @IsNotEmpty()
-    role: string;
+    isAdmin: boolean;
 
     @Column()
     @CreateDateColumn()
     createdAt: Date;
-
-    @Column()
-    @UpdateDateColumn()
-    updatedAt: Date;
 
     @OneToMany(() => Subscription, (subscription: Subscription) => subscription.user, { cascade: ['remove'] })
     subscriptions: Subscription[];
@@ -57,10 +52,10 @@ export class User extends Person {
     }
 
 
-    constructor(firstName: string, lastName: string, BirthDate: Date, email: string, role: string, pswd?: string) {
+    constructor(firstName: string, lastName: string, BirthDate: Date, email: string, isAdmin: boolean, pswd?: string) {
         super(firstName, lastName, BirthDate);
         this.mail = email;
-        this.role = role;
+        this.isAdmin = isAdmin;
         if(pswd)
             this.password= pswd;
     }
