@@ -6,9 +6,6 @@ export class Subscription {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column({ length: 25, nullable: true })
-    pictureName: string;
-
     @CreateDateColumn()
     subscriptionDate: Date;
 

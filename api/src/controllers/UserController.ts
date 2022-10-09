@@ -38,32 +38,46 @@ export class UserController {
 
     };
 
-    static newUser = async (req: Request, res: Response) => {
-        //get parameters from the body
-        const { firstName, lastName, dateOfBirth, mail, password, isAdmin } = req.body;
-        let user = new User(firstName, lastName, dateOfBirth, mail, isAdmin, password);
-        // user.password = password;
-
-        //validate if the parameters are ok
-        const errors = await validate(user);
-        if (errors.length > 0) {
-            res.status(400).json({err: true, msg: 'Respect fields rules'});
-        }
-
-        //hash the password, to securely store on Db
-        user.hashPassword();
-
-        //try to save. If fails, the username is alreadry in use
-        const userRepository = AppDataSource.getRepository(User);
-        try {
-            await userRepository.save(user);
-        } catch (e) {
-            res.status(409).json({err: true, msg: "email already in used by an user"});
-        }
-
-        //If all Ok send 201 response
-        res.status(201).send("user created");
-    };
+    static newUser = (isAdmin: boolean)=>{
+        return async (req: Request, res: Response) => {
+            //get parameters from the body
+            const { firstName, lastName, dateOfBirth, mail, password } = req.body;
+            let user = new User(
+                (firstName) ? firstName.trim() : firstName, 
+                (lastName) ? lastName.trim() : lastName, 
+                new Date(dateOfBirth), 
+                (mail) ? mail.trim() : mail, 
+                isAdmin, 
+                password);
+    
+            //validate if the parameters are ok
+            const errors = await validate(user);
+            if (errors.length > 0) {
+                const msg= errors.reduce((m, singleError)=>{
+                const breakedRules= [];
+                for(let rule in singleError.constraints)
+                    breakedRules.push(`${singleError.constraints[rule]}`)
+                    m+=`${singleError.property}: ${breakedRules.join(', ')}. `;
+                    return m;
+                }, '');
+                return res.status(400).json({err: true, msg: msg});
+            }
+    
+            //hash the password, to securely store on Db
+            user.hashPassword();
+    
+            //try to save. If fails, the username is alreadry in use
+            const userRepository = AppDataSource.getRepository(User);
+            try {
+                await userRepository.save(user);
+            } catch (e) {
+                return res.status(409).json({err: true, msg: "email already in used by an user"});
+            }
+    
+            //If all Ok send 201 response
+            res.status(201).json({err: true, msg:`${(isAdmin)?'Admin':'User'} account created`});
+        };
+    }
 
     static editUser = async (req: Request, res: Response) => {
         //get the id from the url
@@ -79,23 +93,29 @@ export class UserController {
             user = await userRepository.findOneBy({ id: id });
         } catch (error) {
             //if not found, send 404 erros response
-            res.status(404).send("user not found");
-            return;
+            return res.status(404).json({err: true, msg:"user not found"});
         }
 
         //validate the new values on model
         user = new User(firstName, lastName, dateOfBirth, mail, isAdmin)
         const errors = await validate(user);
-        if (errors.length > 0) {
-            res.status(400).json({err: true, msg: 'Respect fields rules'})
-            return;
+        if (errors.length > 0){
+            const msg= errors.reduce((m, singleError)=>{
+                const breakedRules= [];
+                for(let rule in singleError.constraints)
+                    breakedRules.push(`${singleError.constraints[rule]}`)
+                m+=`${singleError.property}: ${breakedRules.join(', ')}. `;
+                return m;
+            }, '');
+            return res.status(400).json({err: true, msg: msg})
+
         }
 
-        //try to save, if failsn that means username already in use
+        //try to save, if failsn that means mail already in use
         try {
             await userRepository.save(user);
         } catch (e) {
-            res.status(409).json({err: true, msg: "email already in used by an user"});
+            return res.status(409).json({err: true, msg: "email already in used by an user"});
         }
 
         //after all send a 204(no content, but accepter response)
@@ -106,12 +126,10 @@ export class UserController {
         //get the id from the url
         const id = parseInt(req.params.body, 10);
         const userRepository = AppDataSource.getRepository(User);
-        let user;
         try {
-            user = await userRepository.findOneBy({ id: id });
+            await userRepository.findOne({where: {id: id} , select: ['id']});
         } catch (error) {
-            res.status(404).json({err: true, msg:"user not found"});
-            return;
+            return res.status(404).json({err: true, msg:"user not found"});
         }
         userRepository.delete(id);
 

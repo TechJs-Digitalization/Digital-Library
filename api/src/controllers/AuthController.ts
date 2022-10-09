@@ -30,7 +30,7 @@ class AuthController {
         const token = jwt.sign(
             { userId: user.id, isAdmin: user.isAdmin },
             config.jwtSecret,
-            { expiresIn: 3600 }
+            { expiresIn: 7200 }
         );
 
         //send the jwt in the response
@@ -50,7 +50,6 @@ class AuthController {
     static changePassword = async (req: Request, res: Response) => {
         //Get ID from JWT
         const id = parseInt(res.locals.jwtPayload.userId);
-        console.log(res.locals.jwtPayload);
         
         //get parameters from body
         const { oldPassword, newPassword, newPasswordVerif } = req.body;
@@ -78,9 +77,16 @@ class AuthController {
 
         //validate de model(password length)
         user.password = newPassword;
-        const errors = await validate(user);
+        const errors = await validate(user, {skipMissingProperties: true});
         if (errors.length > 0) {
-            return res.status(401).json({err: true, msg: errors});
+            const msg= errors.reduce((m, singleError)=>{
+                const breakedRules= [];
+                for(let rule in singleError.constraints)
+                    breakedRules.push(`${singleError.constraints[rule]}`)
+                m+=`${singleError.property}: ${breakedRules.join(', ')}. `;
+                return m;
+            }, '');
+            return res.status(401).json({err: true, msg: msg});
         }
 
         //hash the new password and save

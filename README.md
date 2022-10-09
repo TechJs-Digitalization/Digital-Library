@@ -39,8 +39,23 @@ By default, there is an pre-saved administrator saved with those information:
 - mail: admin@gmail.com
 - password: admin
 &nbsp;  
-&nbsp;  
+&nbsp; 
 
+#### Creating an account
+| method | request | encode-type | input name | description | condition |
+|--------|---------|-------------|------------|-------------|-----------|
+| POST | SERVER/auth/signin | x-www-form-urlencoded | mail , password, firstName, lastName, dateOfBirth, | to create an user account | logged out, respect all field rules |
+| POST | SERVER/auth/newAdmin | x-www-form-urlencoded | mail , password, firstName, lastName, dateOfBirth, | to create a new admin account | logged in as admin, respect all field rules |
+  
+  Field constraints:
+| Field | Description | Type | Constraint |
+|-------|-------------|------|------------|
+| mail | mail of the user/admin | string | Should be a valid mail. Mail should be unique per user. Should not be empty | 
+| password | password | string | Should have a length more or equal to 6. Should not be empty | 
+| firstName | firstName of user | string | Should have a length less or equal to 30. Should not be empty | 
+| lastName | lastName of user | string | Should have a length less or equal to 30. Should not be empty | 
+&nbsp;  
+&nbsp; 
 ### CRUD Book
 The "cover" inpu value should be an image file, otherwise you'd get an error message
 | Method | Request | Encode-type | Input name | Description | Condition |
@@ -64,4 +79,8 @@ The "cover" inpu value should be an image file, otherwise you'd get an error mes
 **NB**: When getting a book, the link to the file is like "/public/bookPictures/nom.extension". So you should add the value of `SERVER` to it.  
 example: localhost:8080/public/bookPictures/nom.extension
 
+**NB: Date must have [IETF-compliant RFC 2822 timestamps](https://datatracker.ietf.org/doc/html/rfc2822#page-14) or a string in a [ version of ISO8601](https://262.ecma-international.org/11.0/#sec-date.parse), format that can be used in Javacript Date constructor**  
+&nbsp;  
+
+**TODO: mimddleware verification date**
 ## Front-end
