@@ -12,6 +12,7 @@ import * as bcrypt from "bcrypt";
 import { Subscription } from './Subscription';
 import { NumTel } from './NumTel';
 import { BookCheckout } from "./BookCheckout";
+import { MailIsUnique } from "../services/mailValidation";
 
 @Entity({ name: 'users' })
 @Unique(["mail"])
@@ -20,12 +21,13 @@ export class User extends Person {
     id: number;
 
     @Column()
+    @MailIsUnique()
     @IsEmail(undefined, {message: 'the provided mail isn\'t a valid mail'})
     mail: string;
 
     @Column()
-    @IsString()
     @Length(6, 100)
+    @IsString()
     password: string;
     
     @Column({type: 'boolean', default: false})

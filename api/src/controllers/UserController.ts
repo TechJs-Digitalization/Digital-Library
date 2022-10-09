@@ -42,7 +42,13 @@ export class UserController {
         return async (req: Request, res: Response) => {
             //get parameters from the body
             const { firstName, lastName, dateOfBirth, mail, password } = req.body;
-            let user = new User(firstName, lastName, dateOfBirth, mail, isAdmin, password);
+            let user = new User(
+                (firstName) ? firstName.trim() : firstName, 
+                (lastName) ? lastName.trim() : lastName, 
+                new Date(dateOfBirth), 
+                (mail) ? mail.trim() : mail, 
+                isAdmin, 
+                password);
     
             //validate if the parameters are ok
             const errors = await validate(user);
@@ -69,7 +75,7 @@ export class UserController {
             }
     
             //If all Ok send 201 response
-            res.status(201).json({err: true, msg:"user created"});
+            res.status(201).json({err: true, msg:`${(isAdmin)?'Admin':'User'} account created`});
         };
     }
 

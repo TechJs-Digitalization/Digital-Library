@@ -1,5 +1,6 @@
-import { IsDate, IsNotEmpty, IsString, MaxLength, MinDate } from "class-validator";
+import { IsDate, IsNotEmpty, IsString, MaxDate, MaxLength, MinDate } from "class-validator";
 import { Column } from "typeorm";
+import { MinAge } from "../../services/dateValidation";
 
 export abstract class Person {
     @Column({
@@ -7,14 +8,14 @@ export abstract class Person {
         length: 30,
         nullable: false
     })
-    @IsString()
-    @IsNotEmpty()
     @MaxLength(30)
+    @IsNotEmpty()
+    @IsString()
     firstName: string
 
-    @IsString()
-    @IsNotEmpty()
     @MaxLength(30)
+    @IsNotEmpty()
+    @IsString()
     @Column({
         type: "varchar",
         length: 30,
@@ -25,11 +26,11 @@ export abstract class Person {
     @Column({
         type: "date"
     })
-    @IsNotEmpty()
-    @IsDate()
     //Should be at leat 12yo
-    //12years= 378 432 000s
-    @MinDate(new Date(Date.now()-378432000), {message: 'Should be at least 12 years old'})
+    // @MaxDate(new Date(Date.now()-3784320000), {message: 'Should be at least 12 years old'})
+    @MinAge(12)
+    @IsDate({message: 'dateOfBirth should not be empty, dateOfBirth must be a valid date, and respect format'})
+    @IsNotEmpty()
     dateOfBirth: Date;
 
     constructor(firstName: string, lastName: string, BirthDate: Date) {
