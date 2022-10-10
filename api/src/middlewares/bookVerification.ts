@@ -1,9 +1,8 @@
 import { NextFunction, Request, Response } from "express";
-import { File } from "formidable";
 import { basename, join } from "path";
 import { AuthorController } from "../controllers/author.controller";
 import BookController from "../controllers/book.controller";
-import { BookCategoryController } from "../controllers/bookCategory.controller";
+import BookCategoryController from "../controllers/bookCategory.controller";
 import { AppDataSource } from "../data-source";
 import { Book } from "../entity/Book";
 import { deleteFile } from "../services/fileUpload";
