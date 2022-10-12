@@ -1,3 +1,4 @@
+import { validate } from "class-validator";
 import { Request, Response } from "express";
 import { FindManyOptions } from "typeorm";
 import { AppDataSource } from "../data-source";
@@ -87,15 +88,31 @@ export default class BookCategoryController {
      * 
      * @description name in "req.body.bookCategoryName" and books in "req.body.bookList"
      */
-    static async create(req: Request, res: Response) {
-        try {
-            await BookCategoryController.repository.save({
-                name: req.body.bookCategoryName,
-                books: (req.body.bookList) ? req.body.bookList : []
-            })
-        } catch (err) {
-            res.status(500).send({ err: true, msg: err })
+    static async save(req: Request, res: Response) {
+        const {name}= req.body; 
+        const newCategory= new BookCategory(
+            (name) ? name.trim() : name
+        );
+
+        //validate if parameters are valid
+        const errors= await validate(newCategory)
+        if(errors.length>0){
+            const msg= errors.reduce((m, singleError)=>{
+                const breakedRules= [];
+                for(let rule in singleError.constraints)
+                    breakedRules.push(`${singleError.constraints[rule]}`)
+                    return m + `${singleError.property}: ${breakedRules.join(', ')}. `;
+            }, '');
+            return res.status(400).json({err: true, msg: msg});
         }
+        
+        try {
+            await BookCategoryController.repository.save(newCategory)
+        } catch (err) {
+            return res.status(500).send({ err: true, msg: err })
+        }
+
+        res.status(201).json({err: false, msg: 'Category successfully created'})
     }
 
     static async verifyCategoryExist(id: number): Promise<boolean> {

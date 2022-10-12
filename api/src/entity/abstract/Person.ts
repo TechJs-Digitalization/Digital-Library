@@ -1,4 +1,4 @@
-import { IsDate, IsNotEmpty, IsString, MaxDate, MaxLength, MinDate } from "class-validator";
+import { IsDate, IsNotEmpty, IsString, Matches, MaxDate, MaxLength, MinDate } from "class-validator";
 import { Column } from "typeorm";
 import { MinAge } from "../../services/dateValidation";
 
@@ -9,11 +9,13 @@ export abstract class Person {
         nullable: false
     })
     @MaxLength(30)
+    @Matches(/\D+/g, {message: 'couldn\'t contain number'})
     @IsNotEmpty()
     @IsString()
-    firstName: string
-
+    firstName?: string
+    
     @MaxLength(30)
+    @Matches(/\D+/g, {message: 'couldn\'t contain number'})
     @IsNotEmpty()
     @IsString()
     @Column({
@@ -21,7 +23,7 @@ export abstract class Person {
         length: 30,
         nullable: false
     })
-    lastName: string
+    lastName?: string
 
     @Column({
         type: "date"
@@ -31,9 +33,9 @@ export abstract class Person {
     @MinAge(12)
     @IsDate({message: 'dateOfBirth should not be empty, dateOfBirth must be a valid date, and respect format'})
     @IsNotEmpty()
-    dateOfBirth: Date;
+    dateOfBirth?: Date;
 
-    constructor(firstName: string, lastName: string, BirthDate: Date) {
+    constructor(firstName?: string, lastName?: string, BirthDate?: Date) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = BirthDate;

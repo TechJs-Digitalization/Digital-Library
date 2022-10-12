@@ -14,4 +14,6 @@ categoryRouter.get('/bookInCategory/:id', normalizeQuery(['createdAt','title']),
 
 .get('/withHiddendInfo/:id', [checkJwt, checkIfAdmin], BookCategoryController.getInfo(true))
 
+.post('/', [checkJwt, checkIfAdmin], BookCategoryController.save)
+
 export default categoryRouter;

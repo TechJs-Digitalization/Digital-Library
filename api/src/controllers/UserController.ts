@@ -42,6 +42,7 @@ export class UserController {
         return async (req: Request, res: Response) => {
             //get parameters from the body
             const { firstName, lastName, dateOfBirth, mail, password } = req.body;
+            
             let user = new User(
                 (firstName) ? firstName.trim() : firstName, 
                 (lastName) ? lastName.trim() : lastName, 
@@ -54,11 +55,10 @@ export class UserController {
             const errors = await validate(user);
             if (errors.length > 0) {
                 const msg= errors.reduce((m, singleError)=>{
-                const breakedRules= [];
-                for(let rule in singleError.constraints)
-                    breakedRules.push(`${singleError.constraints[rule]}`)
-                    m+=`${singleError.property}: ${breakedRules.join(', ')}. `;
-                    return m;
+                    const breakedRules= [];
+                    for(let rule in singleError.constraints)
+                        breakedRules.push(`${singleError.constraints[rule]}`)
+                        return m + `${singleError.property}: ${breakedRules.join(', ')}. `;
                 }, '');
                 return res.status(400).json({err: true, msg: msg});
             }
@@ -81,24 +81,42 @@ export class UserController {
 
     static editUser = async (req: Request, res: Response) => {
         //get the id from the url
-        const id: number = parseInt(req.params.body, 10);
+        const id: number = parseInt(res.locals.jwtPayload.userId);
 
-        //get values from the body
-        const { firstName, lastName, dateOfBirth, mail, isAdmin } = req.body;
+        let userUpddate: {[keys: string]: any}= {};
+        const tmp= new User();
+        for(let prop in req.fields){
+            
+            if(prop in tmp){
+                switch (prop) {
+                    case "firstName":
+                    case "lastName":
+                    case "password":
+                        userUpddate[prop]= req.body[prop].trim();
+                        break;
+                        
+
+                    case "category":
+                    case "author":
+                        userUpddate[prop]= {id: Number(req.body[prop]!)};
+                        break;
+                }
+            }
+        }
+
 
         //try to find user on database
         const userRepository = AppDataSource.getRepository(User);
         let user;
         try {
-            user = await userRepository.findOneBy({ id: id });
+            user = await userRepository.preload({ id: id });
         } catch (error) {
             //if not found, send 404 erros response
             return res.status(404).json({err: true, msg:"user not found"});
         }
 
         //validate the new values on model
-        user = new User(firstName, lastName, dateOfBirth, mail, isAdmin)
-        const errors = await validate(user);
+        const errors = await validate(userUpddate);
         if (errors.length > 0){
             const msg= errors.reduce((m, singleError)=>{
                 const breakedRules= [];
@@ -113,7 +131,7 @@ export class UserController {
 
         //try to save, if failsn that means mail already in use
         try {
-            await userRepository.save(user);
+            await userRepository.update({id:id},userUpddate);
         } catch (e) {
             return res.status(409).json({err: true, msg: "email already in used by an user"});
         }
