@@ -24,14 +24,6 @@ export default class BookCategoryController {
             if(!matchedCategory)
                 return res.status(404).json({err: true, msg: 'Category not found'})
 
-            const bookInCategory= await BookController.repository.find({
-                where: {
-                    category: {
-                        id: Number(id)
-                    }
-                }
-            })
-
             let resultat: {
                 id: number, 
                 name: string,
@@ -42,12 +34,16 @@ export default class BookCategoryController {
             resultat= {
                 id: matchedCategory.id, 
                 name: matchedCategory.name,
-                dispoBook: bookInCategory.filter(book => book.dispo ).length,
+                dispoBook: await BookController.repository.createQueryBuilder('book')
+                    .where('book.categoryId= :id', {id: Number(req.params.id)})
+                    .andWhere('book.dispo= :dispo', {dispo: true})
+                    .getCount(),
+                nonDispoBook: (showHidden) ? await BookController.repository.createQueryBuilder('book')
+                    .where('book.categoryId= :id', {id: Number(req.params.id)})
+                    .andWhere('book.dispo= :dispo', {dispo: false})
+                    .getCount() : undefined
             };
 
-            if(showHidden)
-                resultat.nonDispoBook= bookInCategory.length - resultat.dispoBook
-    
             res.status(200).json({err: false, data: resultat});
         }
     }

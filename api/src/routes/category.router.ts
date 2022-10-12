@@ -8,7 +8,7 @@ const categoryRouter= Router();
 
 categoryRouter.get('/bookInCategory/:id', normalizeQuery(['createdAt','title']), BookCategoryController.getBookInCategory(false))
 
-.get('/allBookInCategory/:id', normalizeQuery(['createdAt','title']), BookCategoryController.getBookInCategory(true))
+.get('/allBookInCategory/:id', [checkJwt, checkIfAdmin, normalizeQuery(['createdAt','title'])], BookCategoryController.getBookInCategory(true))
 
 .get('/:id', BookCategoryController.getInfo())
 
