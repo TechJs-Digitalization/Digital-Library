@@ -4,11 +4,11 @@ import { User } from "../entity/User";
 import { validate } from "class-validator";
 
 export class UserController {
+    static repository= AppDataSource.getRepository(User);
 
     static listAll = async (req: Request, res: Response) => {
         //get user from database
-        const userRepository = AppDataSource.getRepository(User);
-        const users = await userRepository.find(
+        const users = await UserController.repository.find(
             { 
                 select: ["id", "firstName", "lastName", "dateOfBirth", "mail"],
                 where: {isAdmin: false}
@@ -24,9 +24,9 @@ export class UserController {
         const id: number = parseInt(req.params.id, 10);
 
         //get the user from database
-        const userRepository = AppDataSource.getRepository(User);
+        
         try {
-            let user = await userRepository.findOneOrFail({
+            let user = await UserController.repository.findOneOrFail({
                 select: ["id", "firstName", "lastName", "dateOfBirth", "mail"],
                 where: { id: id }
             });
@@ -67,9 +67,9 @@ export class UserController {
             user.hashPassword();
     
             //try to save. If fails, the username is alreadry in use
-            const userRepository = AppDataSource.getRepository(User);
+            
             try {
-                await userRepository.save(user);
+                await UserController.repository.save(user);
             } catch (e) {
                 return res.status(409).json({err: true, msg: "email already in used by an user"});
             }
@@ -81,42 +81,37 @@ export class UserController {
 
     static editUser = async (req: Request, res: Response) => {
         //get the id from the url
-        const id: number = parseInt(res.locals.jwtPayload.userId);
-
-        let userUpddate: {[keys: string]: any}= {};
-        const tmp= new User();
-        for(let prop in req.fields){
-            
-            if(prop in tmp){
-                switch (prop) {
-                    case "firstName":
-                    case "lastName":
-                    case "password":
-                        userUpddate[prop]= req.body[prop].trim();
-                        break;
-                        
-
-                    case "category":
-                    case "author":
-                        userUpddate[prop]= {id: Number(req.body[prop]!)};
-                        break;
-                }
-            }
-        }
-
-
+        const id: number = parseInt(req.params.id);
         //try to find user on database
-        const userRepository = AppDataSource.getRepository(User);
-        let user;
         try {
-            user = await userRepository.preload({ id: id });
+            await UserController.repository.findOneOrFail({ 
+                select: ['id'],
+                where: {id: id} 
+            });
         } catch (error) {
             //if not found, send 404 erros response
             return res.status(404).json({err: true, msg:"user not found"});
         }
 
+        let userUpdate: {[keys: string]: any}= {};
+        const tmp= new User();
+        
+        for(let prop in req.body){
+            if(prop in tmp){
+                switch (prop) {
+                    case "firstName":
+                    case "lastName":
+                    case "password":
+                    case 'mail':
+                    case 'dateOfBirth':
+                        userUpdate[prop]= req.body[prop].trim();
+                        break;
+                }
+            }
+        }
+
         //validate the new values on model
-        const errors = await validate(userUpddate);
+        const errors = await validate(userUpdate);
         if (errors.length > 0){
             const msg= errors.reduce((m, singleError)=>{
                 const breakedRules= [];
@@ -131,25 +126,24 @@ export class UserController {
 
         //try to save, if failsn that means mail already in use
         try {
-            await userRepository.update({id:id},userUpddate);
+            await UserController.repository.update({id:id},userUpdate);
         } catch (e) {
-            return res.status(409).json({err: true, msg: "email already in used by an user"});
+            return res.status(401).json({err: true, msg: 'the provided email is already used by another user'});
         }
 
-        //after all send a 204(no content, but accepter response)
-        res.status(204).json({err: false, msg: "User updated"});
+        res.status(200).json({err: false, msg: "User updated"});
     };
 
     static deleteUser = async (req: Request, res: Response) => {
         //get the id from the url
         const id = parseInt(req.params.body, 10);
-        const userRepository = AppDataSource.getRepository(User);
+        
         try {
-            await userRepository.findOne({where: {id: id} , select: ['id']});
+            await UserController.repository.findOne({where: {id: id} , select: ['id']});
         } catch (error) {
             return res.status(404).json({err: true, msg:"user not found"});
         }
-        userRepository.delete(id);
+        UserController.repository.delete(id);
 
         //after all, send a 204 status(no content but acceptes) response
         res.status(204).json({err: false, msg: "User deleted"});

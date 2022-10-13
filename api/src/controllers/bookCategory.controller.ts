@@ -109,10 +109,72 @@ export default class BookCategoryController {
         try {
             await BookCategoryController.repository.save(newCategory)
         } catch (err) {
-            return res.status(500).send({ err: true, msg: err })
+            return res.status(401).send({ err: true, msg: 'the provided name is already used by another category' })
         }
 
         res.status(201).json({err: false, msg: 'Category successfully created'})
+    }
+
+    static async update(req: Request, res: Response){
+        //get the id from the url
+        const id: number = parseInt(req.params.id);
+        //try to find category on database
+        try {
+            await BookCategoryController.repository.findOneOrFail({
+                select: ['id'],
+                where: {id: id}
+        });
+        } catch (error) {
+            //if not found, send 404 erros response
+            return res.status(404).json({err: true, msg:"category not found"});
+        }
+
+        let categoryUpdate: {[keys: string]: any}= {};
+        categoryUpdate.name= req.body.name.trim();
+
+        //validate the new values on model
+        const errors = await validate(categoryUpdate);
+        if (errors.length > 0){
+            const msg= errors.reduce((m, singleError)=>{
+                const breakedRules= [];
+                for(let rule in singleError.constraints)
+                    breakedRules.push(`${singleError.constraints[rule]}`)
+                m+=`${singleError.property}: ${breakedRules.join(', ')}. `;
+                return m;
+            }, '');
+            return res.status(400).json({err: true, msg: msg})
+
+        }
+
+        //try to save, if failsn that means name already in use
+        try {
+            await BookCategoryController.repository.update({id:id},categoryUpdate);
+        } catch (e) {
+            return res.status(401).json({err: true, msg: 'the provided name is already used by another category'});
+        }
+
+        res.status(200).json({err: false, msg: "Category updated"});
+    }
+
+    static async delete(req: Request, res: Response){
+        const cpt= await BookCategoryController.repository.createQueryBuilder('category')
+            .loadRelationCountAndMap('category.bookCount', 'category.books', )
+            // .select('category.name')
+            .addSelect('category.name')
+            .where('category.id =:id', {id: parseInt(req.params.id)})
+            .getOne() as any
+
+        if(!cpt)
+            return res.status(404).json({err: true, msg: 'Category not found'})
+    
+        try {
+            const test= new BookCategory()
+            test.id= cpt!.id
+            await BookCategoryController.repository.remove([test])
+        } catch (error) {
+            return res.status(500).json({err: true, msg: error})
+        }
+        res.status(200).json({err: false, msg: `"${cpt!.name}" deleted with ${(cpt!.bookCount>1) ? cpt!.bookCount + ' books' : cpt!.bookCount + ' book'}`})
     }
 
     static async verifyCategoryExist(id: number): Promise<boolean> {

@@ -20,8 +20,8 @@ router.get("/", [checkJwt, checkIfAdmin], UserController.listAll)
 
 //Edit one user
 .put(
-    "/",
-    [checkJwt],
+    "/:id([0-9]+)",
+    [checkJwt, checkIfAdmin],
     UserController.editUser
 )
 

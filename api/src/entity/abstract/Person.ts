@@ -12,7 +12,7 @@ export abstract class Person {
     @Matches(/\D+/g, {message: 'couldn\'t contain number'})
     @IsNotEmpty()
     @IsString()
-    firstName?: string
+    firstName: string
     
     @MaxLength(30)
     @Matches(/\D+/g, {message: 'couldn\'t contain number'})
@@ -23,7 +23,7 @@ export abstract class Person {
         length: 30,
         nullable: false
     })
-    lastName?: string
+    lastName: string
 
     @Column({
         type: "date"
@@ -36,8 +36,8 @@ export abstract class Person {
     dateOfBirth?: Date;
 
     constructor(firstName?: string, lastName?: string, BirthDate?: Date) {
-        this.firstName = firstName;
-        this.lastName = lastName;
+        this.firstName = (firstName)?firstName:'';
+        this.lastName = (lastName)?lastName:'';
         this.dateOfBirth = BirthDate;
     }
 }

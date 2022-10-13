@@ -219,7 +219,7 @@ export async function beforeUpdateOperation(req: Request, res: Response, next: N
         try {
             await deleteFile(join(BookController.pictureDir, basename(bookInitial.coverPicture)))
         } catch (error) {
-            res.status(500).json({err: true, msg: 'Internal server error'})
+            res.status(500).json({err: true, msg: 'couldn\'t find the previous cover picture file'})
             return next({})
         }
     }   
@@ -245,7 +245,7 @@ export async function beforeDeleteOperation(req: Request, res: Response, next: N
                 await deleteFile(join(BookController.pictureDir, basename(book.coverPicture)))
                 return next();
             } catch (error) {
-                res.status(500).json({err: true, msg: 'Internal server error'})
+                res.status(500).json({err: true, msg: 'couldn\'t find the previous cover picture file'})
                 return next({})
             }
         }

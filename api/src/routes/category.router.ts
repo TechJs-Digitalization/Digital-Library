@@ -16,4 +16,8 @@ categoryRouter.get('/bookInCategory/:id', normalizeQuery(['createdAt','title']),
 
 .post('/', [checkJwt, checkIfAdmin], BookCategoryController.save)
 
+.put('/:id', [checkJwt, checkIfAdmin], BookCategoryController.update)
+
+.delete('/:id', [checkJwt, checkIfAdmin], BookCategoryController.delete)
+
 export default categoryRouter;
