@@ -17,7 +17,7 @@ export class Author extends Person{
     @OneToMany(()=>Book, (book: Book)=>book.author)
     books: Book[];
 
-    @OneToMany(()=>NomDePlume, (ndp: NomDePlume)=>ndp.author, {cascade: ['remove']})
+    @OneToMany(()=>NomDePlume, (ndp: NomDePlume)=>ndp.author)
     nomDePlumes: NomDePlume[];
 
     constructor(firstName : string, lastName:string, dateOfBirth:Date, dateOfDeath?:Date){

@@ -10,9 +10,8 @@ import { Person } from "./abstract/Person";
 import { IsEmail, IsNotEmpty, IsString, Length } from 'class-validator';
 import * as bcrypt from "bcrypt";
 import { Subscription } from './Subscription';
-import { NumTel } from './NumTel';
+// import { NumTel } from './NumTel';
 import { BookCheckout } from "./BookCheckout";
-import { MailIsUnique } from "../services/mailValidation";
 
 @Entity({ name: 'users' })
 @Unique(["mail"])
@@ -20,10 +19,9 @@ export class User extends Person {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
-    @MailIsUnique()
+    @Column({unique: true})
     @IsEmail(undefined, {message: 'the provided mail isn\'t a valid mail'})
-    mail: string;
+    mail?: string;
 
     @Column()
     @Length(6, 100)
@@ -37,13 +35,13 @@ export class User extends Person {
     @CreateDateColumn()
     createdAt: Date;
 
-    @OneToMany(() => Subscription, (subscription: Subscription) => subscription.user, { cascade: ['remove'] })
+    @OneToMany(() => Subscription, (subscription: Subscription) => subscription.user)
     subscriptions: Subscription[];
 
-    @OneToMany(() => NumTel, (num: NumTel) => num.user, { cascade: ['remove'] })
-    numTel!: NumTel[];
+    // @OneToMany(() => NumTel, (num: NumTel) => num.user, { cascade: ['remove'] })
+    // numTel!: NumTel[];
 
-    @OneToMany(() => BookCheckout, (checkout: BookCheckout) => checkout.user, {cascade: ['remove']})
+    @OneToMany(() => BookCheckout, (checkout: BookCheckout) => checkout.user)
     checkouts: BookCheckout[];
     
     hashPassword(){
@@ -55,7 +53,7 @@ export class User extends Person {
     }
 
 
-    constructor(firstName: string, lastName: string, BirthDate: Date, email: string, isAdmin?: boolean, pswd?: string) {
+    constructor(firstName?: string, lastName?: string, BirthDate?: Date, email?: string, isAdmin?: boolean, pswd?: string) {
         super(firstName, lastName, BirthDate);
         this.mail = email;
         this.isAdmin = (isAdmin) ? isAdmin : false;

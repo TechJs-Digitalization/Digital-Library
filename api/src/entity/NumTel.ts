@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
-import {User} from './User'
+// import {User} from './User'
 
 @Entity()
 export class NumTel{
@@ -12,6 +12,6 @@ export class NumTel{
     })
     num!: string;
 
-    @ManyToOne(()=>User, (user: User)=>user.numTel)
-    user: User;
+    // @ManyToOne(()=>User, (user: User)=>user.numTel)
+    // user: User;
 }

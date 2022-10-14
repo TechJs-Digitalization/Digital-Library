@@ -9,9 +9,9 @@ export class Subscription {
     @CreateDateColumn()
     subscriptionDate: Date;
 
-    @ManyToOne(() => User, (user: User) => user.subscriptions)
+    @ManyToOne(() => User, (user: User) => user.subscriptions, {cascade:['remove']})
     user: User;
 
-    @ManyToOne(()=>SubscriptionType, (type: SubscriptionType)=>type.subscriptions)
+    @ManyToOne(()=>SubscriptionType, (type: SubscriptionType)=>type.subscriptions, {cascade:['remove']})
     type: SubscriptionType;
 }

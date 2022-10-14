@@ -18,6 +18,6 @@ export class SubscriptionType{
     @Column()
     cost: number;
 
-    @OneToMany(()=>Subscription, (sub: Subscription)=>sub.type, {cascade: ['remove']})
+    @OneToMany(()=>Subscription, (sub: Subscription)=>sub.type)
     subscriptions: Subscription[];
 }

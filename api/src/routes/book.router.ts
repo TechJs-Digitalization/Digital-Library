@@ -4,6 +4,7 @@ import { deleteFileOnError, formidableParse } from "../middlewares/formidable";
 import * as bookVerification from "../middlewares/bookVerification";
 import { checkIfAdmin } from "../middlewares/checkRole";
 import { checkJwt } from "../middlewares/checkJwt";
+import { bookCoverDir } from "../config/pathFiles";
 
 const bookRouter: Router = Router();
 const frommidableParse = formidableParse({
@@ -11,7 +12,7 @@ const frommidableParse = formidableParse({
     keepExtensions: true,
     multiples: true,
     maxFileSize: 20 * 1024 * 1024, //20MB 
-    uploadDir: BookController.pictureDir,
+    uploadDir: bookCoverDir,
     filter: function ({ name, originalFilename, mimetype }) {
         return (mimetype) ? mimetype.includes('image') : false;
     }

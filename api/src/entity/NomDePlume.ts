@@ -9,6 +9,6 @@ export class NomDePlume{
     @Column({length: 40})
     value: string;
 
-    @ManyToOne(()=>Author, (author: Author)=>author.nomDePlumes)
+    @ManyToOne(()=>Author, (author: Author)=>author.nomDePlumes, {cascade:['remove']})
     author: Author;   
 }
