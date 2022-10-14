@@ -1,6 +1,10 @@
-import { IsNotEmpty, IsString, Length, Matches } from 'class-validator';
+import { IsNotEmpty, Length, Matches } from 'class-validator';
+import { basename, join } from 'path';
 import {BeforeRemove, Column, Entity, OneToMany, PrimaryGeneratedColumn} from 'typeorm'
+import { bookCoverDir } from '../config/pathFiles';
+import BookController from '../controllers/book.controller';
 import { AppDataSource } from '../data-source';
+import { deleteFile } from '../services/fileUpload';
 import { Book } from './Book';
 
 @Entity()
@@ -14,17 +18,23 @@ export class BookCategory{
     @Length(2,30)
     @IsNotEmpty()
     name: string;
+
+    @Column({nullable: true})
+    test: boolean
     
-    @OneToMany(()=>Book, (book: Book)=>book.category, {cascade:true})
+    @OneToMany(()=>Book, (book: Book)=>book.category)
     books: Book[];
 
     constructor(name?: string){
         this.name= (name)?name:'';
     }
 
+    
+    
     @BeforeRemove()
     async deleteCoverOfAllBook(){
         try {
+            // const bookRepos= AppDataSource.getRepository(Book)
             const coverPictures= await AppDataSource.getRepository(Book).find({
                 relations: {'category': true},
                 select: ['coverPicture'],
@@ -32,10 +42,15 @@ export class BookCategory{
                     category: {id: this.id}
                 } 
             })
-            console.log(coverPictures)
+            try {
+                await deleteFile(
+                    ...coverPictures.map(file => join(bookCoverDir, basename(file.coverPicture)))
+                )
+            } catch (error) {
+                console.error(error);
+            }
         } catch (error) {
             console.error('Error')
         }
-
     }
 }

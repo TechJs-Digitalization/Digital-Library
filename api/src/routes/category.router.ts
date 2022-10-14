@@ -6,7 +6,9 @@ import normalizeQuery from "../middlewares/queryNormalize";
 
 const categoryRouter= Router();
 
-categoryRouter.get('/bookInCategory/:id', normalizeQuery(['createdAt','title']), BookCategoryController.getBookInCategory(false))
+categoryRouter.get('/', BookCategoryController.getAllCategoriesName)
+
+.get('/bookInCategory/:id', normalizeQuery(['createdAt','title']), BookCategoryController.getBookInCategory(false))
 
 .get('/allBookInCategory/:id', [checkJwt, checkIfAdmin, normalizeQuery(['createdAt','title'])], BookCategoryController.getBookInCategory(true))
 

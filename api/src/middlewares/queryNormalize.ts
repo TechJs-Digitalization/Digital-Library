@@ -15,12 +15,13 @@ export default function normalizeQuery(sortAccept: string[]){
         )
             return res.status(400).json({err: true, msg: 'Invalid query request'});
 
-
-        //keys ending with 'At': createdAt, updatedAt,....
-        if(/\wAt$/.test(req.query.sortBy as string))
-            req.query.order= 'DESC'
-        else 
-            req.query.order= 'ASC'
+        if(order!='ASC' && order!='DESC'){
+            //keys ending with 'At': createdAt, updatedAt,....
+            if(/\wAt$/.test(req.query.sortBy as string))
+                req.query.order= 'DESC'
+            else 
+                req.query.order= 'ASC'
+        }
 
         next();
     }

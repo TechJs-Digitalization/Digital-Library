@@ -35,13 +35,13 @@ export class User extends Person {
     @CreateDateColumn()
     createdAt: Date;
 
-    @OneToMany(() => Subscription, (subscription: Subscription) => subscription.user, { cascade: ['remove'] })
+    @OneToMany(() => Subscription, (subscription: Subscription) => subscription.user)
     subscriptions: Subscription[];
 
     // @OneToMany(() => NumTel, (num: NumTel) => num.user, { cascade: ['remove'] })
     // numTel!: NumTel[];
 
-    @OneToMany(() => BookCheckout, (checkout: BookCheckout) => checkout.user, {cascade: ['remove']})
+    @OneToMany(() => BookCheckout, (checkout: BookCheckout) => checkout.user)
     checkouts: BookCheckout[];
     
     hashPassword(){

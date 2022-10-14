@@ -10,7 +10,7 @@ export class BookCheckout{
     @Column({type: 'date'})
     startingDate: Date;
 
-    @ManyToOne(()=>User, (user: User)=>user.checkouts)
+    @ManyToOne(()=>User, (user: User)=>user.checkouts, {cascade:['remove']})
     user: User;
 
     @ManyToMany(()=>Book)

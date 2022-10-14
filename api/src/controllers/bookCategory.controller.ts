@@ -8,6 +8,14 @@ import BookController from "./book.controller";
 export default class BookCategoryController {
     static repository= AppDataSource.getRepository(BookCategory);
 
+    static async getAllCategoriesName(req: Request, res: Response){
+        const resultat= await BookCategoryController.repository.find({
+            select: ['id', 'name']
+        })
+
+        res.status(500).json({err: false, data: resultat})
+    }
+
     /**
      * 
      * @description Get all info of a book category using the ID stored in "req.body.bookCategoryId"

@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { basename, join } from "path";
+import { bookCoverDir } from "../config/pathFiles";
 import { AuthorController } from "../controllers/author.controller";
 import BookController from "../controllers/book.controller";
 import BookCategoryController from "../controllers/bookCategory.controller";
@@ -217,7 +218,7 @@ export async function beforeUpdateOperation(req: Request, res: Response, next: N
     if(req.files.cover){
         if(coverIsInvalid(req, res, next)) return; 
         try {
-            await deleteFile(join(BookController.pictureDir, basename(bookInitial.coverPicture)))
+            await deleteFile(join(bookCoverDir, basename(bookInitial.coverPicture)))
         } catch (error) {
             res.status(500).json({err: true, msg: 'couldn\'t find the previous cover picture file'})
             return next({})
@@ -242,7 +243,7 @@ export async function beforeDeleteOperation(req: Request, res: Response, next: N
         });
         if(book){
             try {
-                await deleteFile(join(BookController.pictureDir, basename(book.coverPicture)))
+                await deleteFile(join(bookCoverDir, basename(book.coverPicture)))
                 return next();
             } catch (error) {
                 res.status(500).json({err: true, msg: 'couldn\'t find the previous cover picture file'})

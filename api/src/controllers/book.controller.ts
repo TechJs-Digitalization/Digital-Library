@@ -1,11 +1,9 @@
 import { NextFunction, Request, Response } from "express";
-import { join } from "path";
 import { AppDataSource } from "../data-source";
 import { Book } from "../entity/Book";
 
 export default class BookController {
     static repository= AppDataSource.getRepository(Book);
-    static readonly pictureDir = join(__dirname, '..', '..', 'public', 'bookPictures');
 
     static async getById(req: Request, res: Response, next: NextFunction){
         const id= Number(req.params.id);

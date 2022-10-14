@@ -1,4 +1,4 @@
-import { AfterLoad, Check, Column, CreateDateColumn, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { AfterLoad, BeforeRemove, Check, Column, CreateDateColumn, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { BookCategory } from "./BookCategory";
 import { Author } from "./Author";
 import { BookCheckout } from "./BookCheckout";
@@ -28,13 +28,13 @@ export class Book{
     @CreateDateColumn()
     createdAt: Date;
 
-    @ManyToOne(()=>BookCategory, (category: BookCategory)=>category.books)
+    @ManyToOne(()=>BookCategory, (category: BookCategory)=>category.books, {onDelete: 'CASCADE'})
     category!: BookCategory;
 
-    @ManyToOne(()=>Author, (author: Author)=>author.books)
+    @ManyToOne(()=>Author, (author: Author)=>author.books, {onDelete: 'CASCADE'})
     author!: Author;
 
-    @ManyToMany(()=>BookCheckout, {cascade: ["remove"]})
+    @ManyToMany(()=>BookCheckout)
     bookChekouts: BookCheckout[];
 
     @AfterLoad()

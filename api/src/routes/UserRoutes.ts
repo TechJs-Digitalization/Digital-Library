@@ -14,10 +14,6 @@ router.get("/", [checkJwt, checkIfAdmin], UserController.listAll)
     [checkJwt, checkIfAdmin],
     UserController.getOneById
 )
-
-//Create a new user
-// router.post("/", [checkJwt, checkIfAdmin], UserController.newUser);
-
 //Edit one user
 .put(
     "/:id([0-9]+)",
@@ -33,26 +29,3 @@ router.get("/", [checkJwt, checkIfAdmin], UserController.listAll)
 )
 
 export default router;
-
-
-/*export const Routes = [{
-    method: "get",
-    route: "/users",
-    controller: UserController,
-    action: "all"
-}, {
-    method: "get",
-    route: "/users/:id",
-    controller: UserController,
-    action: "one"
-}, {
-    method: "post",
-    route: "/users",
-    controller: UserController,
-    action: "save"
-}, {
-    method: "delete",
-    route: "/users/:id",
-    controller: UserController,
-    action: "remove"
-}]*/
