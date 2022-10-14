@@ -10,14 +10,6 @@
 - [ANDIAMIHARISOA Toagina Andrandraina](https://github.com/toavinathedev-luffy), ESIIA3, n°:23
 - [HERIMAMPIONONA Tahiry Mariano](https://github.com/TahiryMariano), ESIIA3, n°24
 ## Backend
-| Task | Contributors |
-|------|--------------|
-| Authentification | - Tahiry Mariano, <br>- RASOLONDRAIBE Tolotra Mandresy |
-| CRUD Book with upload cover picture of book |- RASOLONDRAIBE Tolotra Mandresy |
-| CRUD Book category |- RASOLONDRAIBE Tolotra Mandresy |
-| CRUD User | Tahiry Mariano |
-| Book checkout system | Toavina |
-| CRUD Author with upload picture |  |
 ### Installation and initialization
 - run this command `cd ./api` then `npm i` to install all dependencies
 - create a file named "`.env`" inside the `api` folder.
