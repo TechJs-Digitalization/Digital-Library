@@ -22,7 +22,7 @@ By default, there is an pre-saved administrator saved with those information:
 |--------|---------|-------------|------------|-------------|-----------|
 | GET | SERVER/users/:id | x-www-form-urlencoded | | get info about user exept password | logged as admin |
 | GET | SERVER/users/:id | x-www-form-urlencoded | | get info about all user exept password | logged as admin |
-| PUT | SERVER/users/:id | x-www-form-urlencoded | | modify info about user | logged as admin |
+| PUT | SERVER/users/:id | x-www-form-urlencoded | mail , password, firstName, lastName, dateOfBirth | modify info about user | logged as admin |
 | POST | SERVER/auth/signin | x-www-form-urlencoded | mail , password, firstName, lastName, dateOfBirth, | to create an user account | logged out, respect all field rules |
 | POST | SERVER/auth/newAdmin | x-www-form-urlencoded | mail , password, firstName, lastName, dateOfBirth, | to create a new admin account | logged in as admin, respect all field rules |
 | DELETE | SERVER/users/:id | x-www-form-urlencoded | | delete an user | logged as admin |
