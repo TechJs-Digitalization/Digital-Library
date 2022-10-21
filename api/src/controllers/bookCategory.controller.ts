@@ -60,6 +60,7 @@ export default class BookCategoryController {
     static getBookInCategory(showHidden: boolean= false){
         return async function(req: Request, res: Response){
             const { page, perPage, sortBy, order } = req.query;
+            const skip= (parseInt(page as string) -1) * (parseInt(perPage as string));
 
             let findOptions= {
                 relations: {author: true, category: true},
@@ -80,7 +81,7 @@ export default class BookCategoryController {
                     category: {id: Number(req.params.id)}
                 },
                 take: parseInt(perPage as string),
-                skip: (parseInt(page as string) -1) * (parseInt(perPage as string))
+                skip: (skip<0) ? 0 : skip
             } as FindManyOptions<Book>
 
             if(!showHidden)

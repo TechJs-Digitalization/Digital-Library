@@ -2,7 +2,6 @@ import { IsNotEmpty, Length, Matches } from 'class-validator';
 import { basename, join } from 'path';
 import {BeforeRemove, Column, Entity, OneToMany, PrimaryGeneratedColumn} from 'typeorm'
 import { bookCoverDir } from '../config/pathFiles';
-import BookController from '../controllers/book.controller';
 import { AppDataSource } from '../data-source';
 import { deleteFile } from '../services/fileUpload';
 import { Book } from './Book';
@@ -14,7 +13,7 @@ export class BookCategory{
     
     @Column({type: 'varchar', unique: true})
     
-    @Matches(/^[a-zA-Z]+(?:(?: |'|-)[a-zA-Z]+)*$/g, {message: 'must be a word of characters in (a to z, A to Z) or a sequence of words separated by one space or one apostrophe or hyphen'})
+    @Matches(/^[a-zA-Z]+(?:(?: |'|-)[a-zA-Z]+)*$/, {message: 'must be a word of characters in (a to z, A to Z) or a sequence of words separated by one space or one apostrophe or hyphen'})
     @Length(2,30)
     @IsNotEmpty()
     name: string;

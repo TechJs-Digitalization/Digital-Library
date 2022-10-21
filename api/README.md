@@ -52,7 +52,7 @@ The "cover" inpu value should be an image file, otherwise you'd get an error mes
   Field constraints:
 | Field | Description | Type | Constraint |
 |-------|-------------|------|------------|
-| title | Title of the book | string | Should not be space. A book title should be unique per author: maybe another author have the same book title an author can't have multiple book with same title | 
+| title | Title of the book | string | Should not be left empty or space. A book title should be unique per author: maybe another author have the same book title an author can't have multiple book with same title. MAX LENGTH: 500 | 
 | synopsis | Synopsis of the book | text | Should not be space.
 | category | ID of the category of the book | integer | category with this ID exist |
 | author | ID of the author | integer | category with this ID exist |
@@ -65,8 +65,6 @@ The "cover" inpu value should be an image file, otherwise you'd get an error mes
 example: localhost:8080/public/bookPictures/nom.extension
  
 &nbsp;  
-
-**TODO: mimddleware verification date**
 
 ## **`CRUD Book Category`**
 | Method | Request | Encode-type | Input name | Description | Condition |

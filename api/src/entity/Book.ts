@@ -2,6 +2,7 @@ import { AfterLoad, BeforeRemove, Check, Column, CreateDateColumn, Entity, ManyT
 import { BookCategory } from "./BookCategory";
 import { Author } from "./Author";
 import { BookCheckout } from "./BookCheckout";
+import { MaxLength } from "class-validator";
 
 @Entity()
 @Check(`"available">=0`)
@@ -9,7 +10,8 @@ export class Book{
     @PrimaryGeneratedColumn('increment')
     id: number;
 
-    @Column('varchar')
+    @Column('varchar', {length: 100})
+    @MaxLength(100)
     title!: string;
 
     @Column('boolean')

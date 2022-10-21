@@ -9,13 +9,13 @@ export abstract class Person {
         nullable: false
     })
     @MaxLength(30)
-    @Matches(/\D+/g, {message: 'couldn\'t contain number'})
+    @Matches(/^\D+$/, {message: 'couldn\'t contain number'})
     @IsNotEmpty()
     @IsString()
     firstName: string
     
     @MaxLength(30)
-    @Matches(/\D+/g, {message: 'couldn\'t contain number'})
+    @Matches(/^\D+$/, {message: 'couldn\'t contain number'})
     @IsNotEmpty()
     @IsString()
     @Column({
