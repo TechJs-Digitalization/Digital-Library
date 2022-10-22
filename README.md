@@ -1,16 +1,19 @@
 # Digital library
-- [KWAN RAMAHARIVO Fifaliana Vasty Sylvania](https://github.com/Vasty26), IGGLIA3
-- [RAOILISON Jesi Mendrika Larissa](https://github.com/Jesimendrika), IGGLIA3
-- [RAFIEFERANA Tiavina Alinah](https://github.com/Tiavisoa), ESIIA3
-- [RANDRIARINIAINA Andriatiana Jordi](https://github.com/Jordird), ESIIA3
-- [RASAMISON Andriamahefa Harilantoniaina](https://github.com/Haryrsm), ESIIA3, n°:02
-- [RANDRIABOAVONJY Rotsy Ny Aina](https://github.com/RotsyNyAina), ESIIA3, n°:05
 - [RASOLONDRAIBE Tolotra Mandresy](https://github.com/TolotraMandresy), ESIIA3, n°:09
 - [RAKOTOMANANA NOMENJANAHARY Aina](https://github.com/titlyn), ESIIA3, n°:13
-- [ANDIAMIHARISOA Toagina Andrandraina](https://github.com/toavinathedev-luffy), ESIIA3, n°:23
-- [HERIMAMPIONONA Tahiry Mariano](https://github.com/TahiryMariano), ESIIA3, n°24
-## Backend
-### Installation and initialization
+- [HERIMAMPIONONA Tahiry Mariano](https://github.com/TahiryMariano), ESIIA3, n°24  
+&nbsp;
+## Task
+| Task | Contributors |
+|------|-------------|
+|authentification| Tahiry, Tolotra |
+|user related operations| Tahiry |
+|CRUD Book| Tolotra |
+|CRUD Category, pagination system to get book by category| Tolotra |
+|Create, Read, Delete Author, pagination system to get book by category| Tolotra |
+|Front signin, login| Aina |
+&nbsp;
+## Installation and initialization
 - run this command `cd ./api` then `npm i` to install all dependencies
 - create a file named "`.env`" inside the `api` folder.
 - put these info inside this file:
@@ -24,15 +27,14 @@ PORT= Replace_the_port_address_where_the_server_gonna_be_launched
 
 - create a "`public`" folder in "`api`"
 - in thtat "`public`" folder, create a "`bookPictures`"  
+- in thtat "`public`" folder, create a "`authorPictures`"  
   
-**NB: If those file arent named as said, you may face some problem**
+**NB: If those file and folder aren't named as said, you may face some problem**
 
-- `npm run migration:run` to run migration
+- `npm run migration:run` to run migration that create a administrator that have access to all modification to the database.
 - `npm run dev` to launch production version of the backend of this project  
 &nbsp;  
-&nbsp;  
+&nbsp;
+Click here to 👉[view API documentation](api/README.md)👈  
 
-**NB:** We use token for authentification. Tokens are stored in cookies. 
-
-Click here to 👉[view API documentation](api/README.md)👈
-## Front-end
+The "`digital_library.postman_collection.json`" as the same level as this readme file can be imported and used in "Postman Canary" to help test this API.

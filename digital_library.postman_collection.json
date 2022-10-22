@@ -810,6 +810,46 @@
 					}
 				],
 				"url": {
+					"raw": "localhost:8080/author/bookByAuthor/1?perPage=3&sortBy=title&page=1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"author",
+						"bookByAuthor",
+						"1"
+					],
+					"query": [
+						{
+							"key": "perPage",
+							"value": "3"
+						},
+						{
+							"key": "sortBy",
+							"value": "title"
+						},
+						{
+							"key": "page",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "book by author",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "default"
+					}
+				],
+				"url": {
 					"raw": "localhost:8080/author/allBookByAuthor/1?perPage=3&sortBy=title&page=1",
 					"host": [
 						"localhost"

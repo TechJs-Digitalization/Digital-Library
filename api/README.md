@@ -92,3 +92,26 @@ example: localhost:8080/public/bookPictures/nom.extension
 - `order`: the condition of the sort operation. Must be `ASC` or `DESC`. If not provided or wrong value, those are default value:
     - if sorted by book creation date: `DESC`
     - if sorted by book title: `ASC`
+&nbsp;  
+
+## **`CRUD Author Category`**
+| Method | Request | Encode-type | Fields name | Description | Condition |
+|--------|---------|-------------|------------|-------------|-----------|
+| POST | SERVER/author/ | form-data | firstName, lastName, dateOfBirth, dateOfDeath, nomDePlumes, coverPicture | Create an author | Logged as admin. Name is required and cannot contain number; dateOfBirth is required; if dateOfDath is provieded it must be later than the DadateBirth; coverPicture must be a picture file; nomDePlumes can be null, can be a multiple field as we use form-data, must be string |
+| GET | SERVER/author |  |  | To get all author's name and nomDePlume | | 
+| GET | SERVER/author/:id | | | To get all information about author, with the number of available books in the category | |
+| GET | SERVER/author/withHiddendInfo/:id |  |  | Same as the previous one, but it will get the number of unavailable books too | Must be loged in as admin |
+| GET | SERVER/author/bookByAuthor/:id |  |  | To get available books in the category following the numero of the page to get, number of book per page and sort condition | |
+| GET | SERVER/author/allBookByAuthor/:id |   |  | Same as the previous one, but it will also show all unavailable books | Must be logged as admin |
+| DELETE | SERVER/author/:id | | | delete the concerned author with his cover picture and all his book and cover picture | id must exist in the DB |
+
+  
+&nbsp;
+
+**NOTE**: When getting book in author, all following query has default value and are optional:
+- `perPage`: number of book per page. Must be positive int. If not provided, perPage will be `10` by default
+- `sortBy`: sort condition. Must have value `createdAt` or `title`. If not provided, it will sort book by `createdAt`
+- `page`: numero of the page. Must be positive int. If not provided, it will be `1`
+- `order`: the condition of the sort operation. Must be `ASC` or `DESC`. If not provided or wrong value, those are default value:
+    - if sorted by book creation date: `DESC`
+    - if sorted by book title: `ASC`
