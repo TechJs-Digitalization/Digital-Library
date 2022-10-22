@@ -1,7 +1,6 @@
 # Digital library
 - [RASOLONDRAIBE Tolotra Mandresy](https://github.com/TolotraMandresy), ESIIA3, n°:09
 - [RAKOTOMANANA NOMENJANAHARY Aina](https://github.com/titlyn), ESIIA3, n°:13
-- [ANDRIAMIHARISOA Toavina Andraindraina](https://github.com/toavinathedev-luffy), ESIIA3, n°23
 - [HERIMAMPIONONA Tahiry Mariano](https://github.com/TahiryMariano), ESIIA3, n°24  
 &nbsp;
 ## Task
@@ -12,7 +11,7 @@
 |CRUD Book| Tolotra | done |
 |CRUD Category, pagination system to get book by category| Tolotra | done |
 |Create, Read, Delete Author, pagination system to get book by category| Tolotra | done |
-|Landing book system | Toavina | pending |
+|Landing book system |  | pending |
 |Front signin, login| Aina | pending |
 &nbsp;
 ## Installation and initialization
