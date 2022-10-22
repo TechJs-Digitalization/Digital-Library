@@ -36,7 +36,7 @@ By default, there is an pre-saved administrator saved with those information:
 | lastName | lastName of user | string | Should have a length less or equal to 30. Should not be empty |
 &nbsp;  
 
-**NB: Date must have [IETF-compliant RFC 2822 timestamps](https://datatracker.ietf.org/doc/html/rfc2822#page-14) or a string in a [ version of ISO8601](https://262.ecma-international.org/11.0/#sec-date.parse), format that can be used in Javacript Date constructor** 
+**NB: Date must have [IETF-compliant RFC 2822 timestamps](https://datatracker.ietf.org/doc/html/rfc2822#page-14) or a string in a [ version of ISO8601](https://262.ecma-international.org/11.0/#sec-date.parse), format that can be used in Javacript Date constructor**. For example this format is accepted: `MM/JJ/YYYYY`
 **When doing update**: only modified field should be provided
 &nbsp;  
 &nbsp; 

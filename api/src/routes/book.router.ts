@@ -19,11 +19,6 @@ const frommidableParse = formidableParse({
 })
 
 bookRouter
-    .get('/', async (req: Request, res: Response, next) => {
-        // return next(new Error('test'));
-        res.status(200).json({ msg: 'miainga' })
-    })
-
     .get('/:id', BookController.getById)
 
     .post('/', frommidableParse, [checkJwt, checkIfAdmin, bookVerification.verify], BookController.save)

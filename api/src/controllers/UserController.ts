@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { AppDataSource } from "../data-source";
 import { User } from "../entity/User";
 import { validate } from "class-validator";
+import getErrorObject from "../services/errorInClassValidator";
 
 export class UserController {
     static repository= AppDataSource.getRepository(User);
@@ -53,15 +54,8 @@ export class UserController {
     
             //validate if the parameters are ok
             const errors = await validate(user);
-            if (errors.length > 0) {
-                const msg= errors.reduce((m, singleError)=>{
-                    const breakedRules= [];
-                    for(let rule in singleError.constraints)
-                        breakedRules.push(`${singleError.constraints[rule]}`)
-                        return m + `${singleError.property}: ${breakedRules.join(', ')}. `;
-                }, '');
-                return res.status(400).json({err: true, msg: msg});
-            }
+            if (errors.length > 0) 
+                return res.status(400).json({err: true, msg: getErrorObject(errors)});
     
             //hash the password, to securely store on Db
             user.hashPassword();
@@ -101,7 +95,6 @@ export class UserController {
                 switch (prop) {
                     case "firstName":
                     case "lastName":
-                    case "password":
                     case 'mail':
                     case 'dateOfBirth':
                         userUpdate[prop]= req.body[prop].trim();
@@ -112,17 +105,8 @@ export class UserController {
 
         //validate the new values on model
         const errors = await validate(userUpdate);
-        if (errors.length > 0){
-            const msg= errors.reduce((m, singleError)=>{
-                const breakedRules= [];
-                for(let rule in singleError.constraints)
-                    breakedRules.push(`${singleError.constraints[rule]}`)
-                m+=`${singleError.property}: ${breakedRules.join(', ')}. `;
-                return m;
-            }, '');
-            return res.status(400).json({err: true, msg: msg})
-
-        }
+        if (errors.length > 0)
+            return res.status(400).json({err: true, msg: getErrorObject(errors)})
 
         //try to save, if failsn that means mail already in use
         try {

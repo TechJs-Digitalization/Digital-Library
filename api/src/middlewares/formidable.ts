@@ -9,12 +9,12 @@ export function formidableParse(options: Options) {
             if (err) throw err;
             req.fields= {};
             req.files= {};
-
+            
             for(let prop in files)
                 req.files[prop] = [files[prop]].flat();
             for( let prop in fields)
-                req.fields[prop]= [fields[prop]].flat()[0];
-
+            req.fields[prop]= [fields[prop]].flat();
+            
             next();
         })
     }

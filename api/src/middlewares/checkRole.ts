@@ -7,6 +7,8 @@ export const checkIfAdmin = async (req: Request, res: Response, next: NextFuncti
     const isAdmin = res.locals.jwtPayload.isAdmin;
     
     //check if current user is an admin
-    if (isAdmin) next();
-    else res.status(401).json({err: true, msg: 'Unauthorized'});
+    if (isAdmin) return next();
+    
+    res.status(401).json({err: true, msg: 'Unauthorized'});
+    next({})
 };
