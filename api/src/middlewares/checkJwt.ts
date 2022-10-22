@@ -17,7 +17,7 @@ export const checkJwt = (req: Request, res: Response, next: NextFunction) => {
             err: true,
             message: "You're not logged in"
         });
-        return;
+        return  next({})
     }
 
     //The token is valid for 1 hour

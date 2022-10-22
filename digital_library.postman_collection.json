@@ -1,0 +1,901 @@
+{
+	"info": {
+		"_postman_id": "be4a2c9d-5e8a-46de-88e1-6829069003e1",
+		"name": "digital_library",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "book creation",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "title",
+							"value": "test HA",
+							"type": "default"
+						},
+						{
+							"key": "synopsis",
+							"value": "test",
+							"type": "default"
+						},
+						{
+							"key": "cover",
+							"type": "file",
+							"src": "/C:/Users/LABODECO/Pictures/couleurs UI-UX/3D-website-webdesign-interaction-e1574435777642.jpg"
+						},
+						{
+							"key": "category",
+							"value": "3",
+							"type": "default"
+						},
+						{
+							"key": "author",
+							"value": "3",
+							"type": "default"
+						},
+						{
+							"key": "available",
+							"value": "6",
+							"type": "default"
+						},
+						{
+							"key": "dispo",
+							"value": "TRUE",
+							"type": "default"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8080/book",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"book"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get book by id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/book/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"book",
+						"1"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "2",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update book by id",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "title",
+							"value": "hafahafa",
+							"type": "default"
+						},
+						{
+							"key": "cover",
+							"type": "file",
+							"src": "/C:/Users/LABODECO/Pictures/couleurs UI-UX/b1a48a461be3889aa77d44b9811202e4.jpg"
+						},
+						{
+							"key": "dispo",
+							"value": "false",
+							"type": "default",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8080/book/16",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"book",
+						"16"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete book by id",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/book/16",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"book",
+						"16"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login as regular user",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsIm1haWwiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2NjUxNzIzMzcsImV4cCI6MTY2NTE3NTkzN30.ZBXJNw5CxhiNxtdvqf-zH7r35hENmy19FHjFLG7rKtc",
+						"type": "default",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "mail",
+							"value": "bema@yahoo.com",
+							"type": "default"
+						},
+						{
+							"key": "password",
+							"value": "admin1234",
+							"type": "default"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8080/auth/login",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login as admin",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsIm1haWwiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2NjUxNzIzMzcsImV4cCI6MTY2NTE3NTkzN30.ZBXJNw5CxhiNxtdvqf-zH7r35hENmy19FHjFLG7rKtc",
+						"type": "default",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "mail",
+							"value": "admin@gmail.com",
+							"type": "default"
+						},
+						{
+							"key": "password",
+							"value": "admin",
+							"type": "default"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8080/auth/login",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "logout",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/auth/logout",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"auth",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "change-password",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "oldPassword",
+							"value": "admin3",
+							"type": "default"
+						},
+						{
+							"key": "newPassword",
+							"value": "admin1234",
+							"type": "default"
+						},
+						{
+							"key": "newPasswordVerif",
+							"value": "admin1234",
+							"type": "default"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8080/auth/change-password",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"auth",
+						"change-password"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/user/2",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "mail",
+							"value": "bema@yahoo.com",
+							"type": "default"
+						},
+						{
+							"key": "dateOfBirth",
+							"value": "30/09/2001",
+							"type": "default"
+						},
+						{
+							"key": "firstName",
+							"value": "Bema",
+							"type": "default",
+							"disabled": true
+						},
+						{
+							"key": "lastName",
+							"value": "ANDRIANAMPOINIMERINA",
+							"type": "default",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8080/users/2",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create a regular user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "mail",
+							"value": "bema@yahoo.com",
+							"type": "default"
+						},
+						{
+							"key": "dateOfBirth",
+							"value": "09/30/1991",
+							"type": "default"
+						},
+						{
+							"key": "password",
+							"value": "admin1234",
+							"type": "default"
+						},
+						{
+							"key": "firstName",
+							"value": "Bema",
+							"type": "default"
+						},
+						{
+							"key": "lastName",
+							"value": "ANDRIANAMPOINIMERINA",
+							"type": "default"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8080/auth/signin",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"auth",
+						"signin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create a new admin",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "mail",
+							"value": "bema@yahoo.com",
+							"type": "default"
+						},
+						{
+							"key": "dateOfBirth",
+							"value": "09/30/1991",
+							"type": "default"
+						},
+						{
+							"key": "password",
+							"value": "admin1234",
+							"type": "default"
+						},
+						{
+							"key": "firstName",
+							"value": "Bema",
+							"type": "default"
+						},
+						{
+							"key": "lastName",
+							"value": "ANDRIANAMPOINIMERINA",
+							"type": "default"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8080/auth/newAdmin",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"auth",
+						"newAdmin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create category",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "name",
+							"value": "ovaiko test",
+							"type": "default"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8080/category/",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"category",
+						""
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "all category",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/category/",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"category",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "categ name w/o hidden",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/category/2",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"category",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "categ name with hidden",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/category/withHiddendInfo/2",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"category",
+						"withHiddendInfo",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "all book with hidden books in categ",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "localhost:8080/category/allBookInCategory/3?perPage=3&sortBy=title&page=1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"category",
+						"allBookInCategory",
+						"3"
+					],
+					"query": [
+						{
+							"key": "perPage",
+							"value": "3"
+						},
+						{
+							"key": "sortBy",
+							"value": "title"
+						},
+						{
+							"key": "page",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "dispo book in categ",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "localhost:8080/category/bookInCategory/1?perPage=0&sortBy=title&page=0",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"category",
+						"bookInCategory",
+						"1"
+					],
+					"query": [
+						{
+							"key": "perPage",
+							"value": "0"
+						},
+						{
+							"key": "sortBy",
+							"value": "title"
+						},
+						{
+							"key": "page",
+							"value": "0"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update category",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "name",
+							"value": "ovaiko",
+							"type": "default"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8080/category/3",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"category",
+						"3"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete category",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "name",
+							"value": "t-t-t",
+							"type": "default"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8080/category/2",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"category",
+						"2"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "creation author",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "cover",
+							"type": "file",
+							"src": "/C:/Users/LABODECO/Pictures/couleurs UI-UX/3D-website-webdesign-interaction-e1574435777642.jpg"
+						},
+						{
+							"key": "dateOfBirth",
+							"value": "09/30/1991",
+							"type": "default"
+						},
+						{
+							"key": "firstName",
+							"value": "Bema",
+							"type": "default"
+						},
+						{
+							"key": "lastName",
+							"value": "ANDRIANAMPOINIMERINA",
+							"type": "default"
+						},
+						{
+							"key": "dateOfDeath",
+							"value": "10/30/1991",
+							"type": "default"
+						},
+						{
+							"key": "nomDePlumes",
+							"value": "Bemarenina",
+							"type": "default"
+						},
+						{
+							"key": "nomDePlumes",
+							"value": "RADO",
+							"type": "default"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8080/author/",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"author",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get all author with names and nom de plume",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/author/",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"author",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "author with hidden info",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/author/withHiddendInfo/qdf",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"author",
+						"withHiddendInfo",
+						"qdf"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "author without hidden info Copy",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/author/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"author",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "all book by author",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "localhost:8080/author/bookByAuthor/1?perPage=3&sortBy=title&page=1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"author",
+						"bookByAuthor",
+						"1"
+					],
+					"query": [
+						{
+							"key": "perPage",
+							"value": "3"
+						},
+						{
+							"key": "sortBy",
+							"value": "title"
+						},
+						{
+							"key": "page",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "book by author",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "localhost:8080/author/allBookByAuthor/1?perPage=3&sortBy=title&page=1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"author",
+						"allBookByAuthor",
+						"1"
+					],
+					"query": [
+						{
+							"key": "perPage",
+							"value": "3"
+						},
+						{
+							"key": "sortBy",
+							"value": "title"
+						},
+						{
+							"key": "page",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete author",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/author/3",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"author",
+						"3"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

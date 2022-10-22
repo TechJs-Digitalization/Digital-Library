@@ -36,7 +36,7 @@ By default, there is an pre-saved administrator saved with those information:
 | lastName | lastName of user | string | Should have a length less or equal to 30. Should not be empty |
 &nbsp;  
 
-**NB: Date must have [IETF-compliant RFC 2822 timestamps](https://datatracker.ietf.org/doc/html/rfc2822#page-14) or a string in a [ version of ISO8601](https://262.ecma-international.org/11.0/#sec-date.parse), format that can be used in Javacript Date constructor** 
+**NB: Date must have [IETF-compliant RFC 2822 timestamps](https://datatracker.ietf.org/doc/html/rfc2822#page-14) or a string in a [ version of ISO8601](https://262.ecma-international.org/11.0/#sec-date.parse), format that can be used in Javacript Date constructor**. For example this format is accepted: `MM/JJ/YYYYY`
 **When doing update**: only modified field should be provided
 &nbsp;  
 &nbsp; 
@@ -52,7 +52,7 @@ The "cover" inpu value should be an image file, otherwise you'd get an error mes
   Field constraints:
 | Field | Description | Type | Constraint |
 |-------|-------------|------|------------|
-| title | Title of the book | string | Should not be space. A book title should be unique per author: maybe another author have the same book title an author can't have multiple book with same title | 
+| title | Title of the book | string | Should not be left empty or space. A book title should be unique per author: maybe another author have the same book title an author can't have multiple book with same title. MAX LENGTH: 500 | 
 | synopsis | Synopsis of the book | text | Should not be space.
 | category | ID of the category of the book | integer | category with this ID exist |
 | author | ID of the author | integer | category with this ID exist |
@@ -65,8 +65,6 @@ The "cover" inpu value should be an image file, otherwise you'd get an error mes
 example: localhost:8080/public/bookPictures/nom.extension
  
 &nbsp;  
-
-**TODO: mimddleware verification date**
 
 ## **`CRUD Book Category`**
 | Method | Request | Encode-type | Input name | Description | Condition |
@@ -88,6 +86,29 @@ example: localhost:8080/public/bookPictures/nom.extension
 | name | the category's name | string | Should by a sequence of characters in [a-zA-Z], words are separated by one hyphen or one space or one space. Length: min 2, max 30 |
 
 **NOTE**: When getting book in category, all following query has default value and are optional:
+- `perPage`: number of book per page. Must be positive int. If not provided, perPage will be `10` by default
+- `sortBy`: sort condition. Must have value `createdAt` or `title`. If not provided, it will sort book by `createdAt`
+- `page`: numero of the page. Must be positive int. If not provided, it will be `1`
+- `order`: the condition of the sort operation. Must be `ASC` or `DESC`. If not provided or wrong value, those are default value:
+    - if sorted by book creation date: `DESC`
+    - if sorted by book title: `ASC`
+&nbsp;  
+
+## **`CRUD Author Category`**
+| Method | Request | Encode-type | Fields name | Description | Condition |
+|--------|---------|-------------|------------|-------------|-----------|
+| POST | SERVER/author/ | form-data | firstName, lastName, dateOfBirth, dateOfDeath, nomDePlumes, coverPicture | Create an author | Logged as admin. Name is required and cannot contain number; dateOfBirth is required; if dateOfDath is provieded it must be later than the DadateBirth; coverPicture must be a picture file; nomDePlumes can be null, can be a multiple field as we use form-data, must be string |
+| GET | SERVER/author |  |  | To get all author's name and nomDePlume | | 
+| GET | SERVER/author/:id | | | To get all information about author, with the number of available books in the category | |
+| GET | SERVER/author/withHiddendInfo/:id |  |  | Same as the previous one, but it will get the number of unavailable books too | Must be loged in as admin |
+| GET | SERVER/author/bookByAuthor/:id |  |  | To get available books in the category following the numero of the page to get, number of book per page and sort condition | |
+| GET | SERVER/author/allBookByAuthor/:id |   |  | Same as the previous one, but it will also show all unavailable books | Must be logged as admin |
+| DELETE | SERVER/author/:id | | | delete the concerned author with his cover picture and all his book and cover picture | id must exist in the DB |
+
+  
+&nbsp;
+
+**NOTE**: When getting book in author, all following query has default value and are optional:
 - `perPage`: number of book per page. Must be positive int. If not provided, perPage will be `10` by default
 - `sortBy`: sort condition. Must have value `createdAt` or `title`. If not provided, it will sort book by `createdAt`
 - `page`: numero of the page. Must be positive int. If not provided, it will be `1`

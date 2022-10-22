@@ -5,8 +5,8 @@ export default function normalizeQuery(sortAccept: string[]){
     return function(req: Request, res: Response, next: NextFunction){
         let { page, perPage, sortBy, order } = req.query;
     
-        if(!page) req.query.page= '1';
-        if(!perPage) req.query.perPage= '10';
+        if(!page || parseInt(page as string)<1) req.query.page= '1';
+        if(!perPage || parseInt(perPage as string)<1) req.query.perPage= '10';
         if(!sortBy) req.query.sortBy = sortAccept[0];
 
         if(

@@ -4,91 +4,103 @@ import { FindManyOptions } from "typeorm";
 import { AppDataSource } from "../data-source";
 import { Book } from "../entity/Book";
 import { BookCategory } from "../entity/BookCategory";
+import getErrorObject from "../services/errorInClassValidator";
 import BookController from "./book.controller";
 export default class BookCategoryController {
-    static repository= AppDataSource.getRepository(BookCategory);
+    static repository = AppDataSource.getRepository(BookCategory);
 
-    static async getAllCategoriesName(req: Request, res: Response){
-        const resultat= await BookCategoryController.repository.find({
+    static async getAllCategoriesName(req: Request, res: Response) {
+        const resultat = await BookCategoryController.repository.find({
             select: ['id', 'name']
         })
 
-        res.status(500).json({err: false, data: resultat})
+        res.status(500).json({ err: false, data: resultat })
     }
 
     /**
      * 
      * @description Get all info of a book category using the ID stored in "req.body.bookCategoryId"
      */
-    static getInfo(showHidden: boolean= false){
-        return async (req: Request, res: Response)=>{
-            const {id} = req.params;
-            const matchedCategory= await BookCategoryController.repository.findOne({
-                select: {
-                    id: true, name: true
-                },
-                where:{ id: Number(id) } 
-            })
-    
-            if(!matchedCategory)
-                return res.status(404).json({err: true, msg: 'Category not found'})
+    static getInfo(showHidden: boolean = false) {
+        return async (req: Request, res: Response) => {
+            const { id } = req.params;
+            try {
+                const matchedCategory = await BookCategoryController.repository.findOne({
+                    select: {
+                        id: true, name: true
+                    },
+                    where: { id: Number(id) }
+                })
 
-            let resultat: {
-                id: number, 
-                name: string,
-                dispoBook: number,
-                nonDispoBook?: number
+                if (!matchedCategory)
+                    return res.status(404).json({ err: true, msg: 'Category not found' })
+
+                let resultat: {
+                    id: number,
+                    name: string,
+                    dispoBook: number,
+                    nonDispoBook?: number
+                }
+
+                resultat = {
+                    id: matchedCategory.id,
+                    name: matchedCategory.name,
+                    dispoBook: await BookController.repository.createQueryBuilder('book')
+                        .where('book.categoryId= :id', { id: Number(req.params.id) })
+                        .andWhere('book.dispo= :dispo', { dispo: true })
+                        .getCount(),
+                    nonDispoBook: (showHidden) ? await BookController.repository.createQueryBuilder('book')
+                        .where('book.categoryId= :id', { id: Number(req.params.id) })
+                        .andWhere('book.dispo= :dispo', { dispo: false })
+                        .getCount() : undefined
+                };
+
+                res.status(200).json({ err: false, data: resultat });
+
+            } catch (error) {
+                return res.status(404).json({ err: true, msg: 'Category not found' })
             }
-
-            resultat= {
-                id: matchedCategory.id, 
-                name: matchedCategory.name,
-                dispoBook: await BookController.repository.createQueryBuilder('book')
-                    .where('book.categoryId= :id', {id: Number(req.params.id)})
-                    .andWhere('book.dispo= :dispo', {dispo: true})
-                    .getCount(),
-                nonDispoBook: (showHidden) ? await BookController.repository.createQueryBuilder('book')
-                    .where('book.categoryId= :id', {id: Number(req.params.id)})
-                    .andWhere('book.dispo= :dispo', {dispo: false})
-                    .getCount() : undefined
-            };
-
-            res.status(200).json({err: false, data: resultat});
         }
     }
 
-    static getBookInCategory(showHidden: boolean= false){
-        return async function(req: Request, res: Response){
-            const { page, perPage, sortBy, order } = req.query;
+    static getBookInCategory(showHidden: boolean = false) {
+        return async function (req: Request, res: Response) {
+            try {
+                const { page, perPage, sortBy, order } = req.query;
+                const skip = (parseInt(page as string) - 1) * (parseInt(perPage as string));
 
-            let findOptions= {
-                relations: {author: true, category: true},
-                select: {
-                    id: true,
-                    title: true,
-                    coverPicture: true,
-                    available: true,
-                    createdAt: true,
-                    author: {
+                let findOptions = {
+                    relations: { author: true, category: true },
+                    select: {
                         id: true,
-                        firstName: true,
-                        lastName: true
-                    }
-                },
-                order:{[`${sortBy}`] : order},
-                where: {
-                    category: {id: Number(req.params.id)}
-                },
-                take: parseInt(perPage as string),
-                skip: (parseInt(page as string) -1) * (parseInt(perPage as string))
-            } as FindManyOptions<Book>
+                        title: true,
+                        coverPicture: true,
+                        available: true,
+                        createdAt: true,
+                        author: {
+                            id: true,
+                            firstName: true,
+                            lastName: true
+                        }
+                    },
+                    order: { [`${sortBy}`]: order },
+                    where: {
+                        category: { id: Number(req.params.id) }
+                    },
+                    take: parseInt(perPage as string),
+                    skip: (skip < 0) ? 0 : skip
+                } as FindManyOptions<Book>
 
-            if(!showHidden)
-                findOptions.where= {...(findOptions.where), dispo: true};
-            
-            const result= await BookController.repository.find(findOptions)
+                if (!showHidden)
+                    findOptions.where = { ...(findOptions.where), dispo: true };
 
-            res.json(result)
+                const result = await BookController.repository.find(findOptions)
+
+                res.json(result)
+            } catch (error) {
+                return res.status(404).json({ err: true, msg: 'Category not found' })
+            }
+
         }
     }
 
@@ -97,92 +109,81 @@ export default class BookCategoryController {
      * @description name in "req.body.bookCategoryName" and books in "req.body.bookList"
      */
     static async save(req: Request, res: Response) {
-        const {name}= req.body; 
-        const newCategory= new BookCategory(
+        const { name } = req.body;
+        const newCategory = new BookCategory(
             (name) ? name.trim() : name
         );
 
         //validate if parameters are valid
-        const errors= await validate(newCategory)
-        if(errors.length>0){
-            const msg= errors.reduce((m, singleError)=>{
-                const breakedRules= [];
-                for(let rule in singleError.constraints)
-                    breakedRules.push(`${singleError.constraints[rule]}`)
-                    return m + `${singleError.property}: ${breakedRules.join(', ')}. `;
-            }, '');
-            return res.status(400).json({err: true, msg: msg});
-        }
-        
+        const errors = await validate(newCategory)
+        if (errors.length > 0)
+            return res.status(400).json({ err: true, msg: getErrorObject(errors), data: null });
+
         try {
             await BookCategoryController.repository.save(newCategory)
         } catch (err) {
             return res.status(401).send({ err: true, msg: 'the provided name is already used by another category' })
         }
 
-        res.status(201).json({err: false, msg: 'Category successfully created'})
+        res.status(201).json({ err: false, msg: 'Category successfully created' })
     }
 
-    static async update(req: Request, res: Response){
+    static async update(req: Request, res: Response) {
         //get the id from the url
         const id: number = parseInt(req.params.id);
         //try to find category on database
         try {
             await BookCategoryController.repository.findOneOrFail({
                 select: ['id'],
-                where: {id: id}
-        });
+                where: { id: id }
+            });
         } catch (error) {
             //if not found, send 404 erros response
-            return res.status(404).json({err: true, msg:"category not found"});
+            return res.status(404).json({ err: true, msg: "category not found" });
         }
 
-        let categoryUpdate: {[keys: string]: any}= {};
-        categoryUpdate.name= req.body.name.trim();
+        let categoryUpdate: { [keys: string]: any } = {};
+        categoryUpdate.name = req.body.name.trim();
 
         //validate the new values on model
         const errors = await validate(categoryUpdate);
-        if (errors.length > 0){
-            const msg= errors.reduce((m, singleError)=>{
-                const breakedRules= [];
-                for(let rule in singleError.constraints)
-                    breakedRules.push(`${singleError.constraints[rule]}`)
-                m+=`${singleError.property}: ${breakedRules.join(', ')}. `;
-                return m;
-            }, '');
-            return res.status(400).json({err: true, msg: msg})
-
-        }
+        if (errors.length > 0)
+            return res.status(400).json({ err: true, msg: getErrorObject(errors), data: null })
 
         //try to save, if failsn that means name already in use
         try {
-            await BookCategoryController.repository.update({id:id},categoryUpdate);
+            await BookCategoryController.repository.update({ id: id }, categoryUpdate);
         } catch (e) {
-            return res.status(401).json({err: true, msg: 'the provided name is already used by another category'});
+            return res.status(401).json({ err: true, msg: 'the provided name is already used by another category' });
         }
 
-        res.status(200).json({err: false, msg: "Category updated"});
+        res.status(200).json({ err: false, msg: "Category updated" });
     }
 
-    static async delete(req: Request, res: Response){
-        const cpt= await BookCategoryController.repository.createQueryBuilder('category')
-            .loadRelationCountAndMap('category.bookCount', 'category.books', )
-            // .select('category.name')
-            .addSelect('category.name')
-            .where('category.id =:id', {id: parseInt(req.params.id)})
-            .getOne() as any
-
-        if(!cpt)
-            return res.status(404).json({err: true, msg: 'Category not found'})
-    
+    static async delete(req: Request, res: Response) {
         try {
-            const test= new BookCategory()
-            test.id= cpt!.id
-            await BookCategoryController.repository.remove([test])
+            const cpt = await BookCategoryController.repository.createQueryBuilder('category')
+                .loadRelationCountAndMap('category.bookCount', 'category.books',)
+                // .select('category.name')
+                .addSelect('category.name')
+                .where('category.id =:id', { id: parseInt(req.params.id) })
+                .getOne() as any
+
+            if (!cpt)
+                return res.status(404).json({ err: true, msg: 'Category not found' })
+
+            try {
+                const test = new BookCategory()
+                test.id = cpt!.id
+                await BookCategoryController.repository.remove([test])
+            } catch (error) {
+                return res.status(500).json({ err: true, msg: error })
+            }
+            res.status(200).json({ err: false, msg: `"${cpt!.name}" deleted with ${(cpt!.bookCount > 1) ? cpt!.bookCount + ' books' : cpt!.bookCount + ' book'}` })
+
         } catch (error) {
-            return res.status(500).json({err: true, msg: error})
+            return res.status(404).json({ err: true, msg: 'Category not found' })
         }
-        res.status(200).json({err: false, msg: `"${cpt!.name}" deleted with ${(cpt!.bookCount>1) ? cpt!.bookCount + ' books' : cpt!.bookCount + ' book'}`})
     }
 
     static async verifyCategoryExist(id: number): Promise<boolean> {
